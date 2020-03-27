@@ -1,0 +1,61 @@
+---
+title: "Statistiques COVID-2019 en temps réél"
+author: "Antoine Gaudet Chardonnet"
+date:  '`r format(Sys.time(), "%d %B, %Y")`'
+output: html_notebook
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r eruptions, echo=FALSE}
+
+base <- read.csv("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv")
+
+base <- base[base$"Province.State" == "",]
+
+base2 <- base[base$Country.Region == "France" | base$Country.Region == "Italy" | base$Country.Region == "Germany" | base$Country.Region == "Iran" | base$Country.Region == "US" | base$Country.Region == "United Kingdom",]
+base2 <- base2[,c(-1:-39)]
+
+x <- ncol (base)
+
+baseGermany <- as.numeric (base2[2,])
+baseItaly <- as.numeric (base2[4,])
+baseFrance <- as.numeric (base2[1,])
+baseIran <- as.numeric (base2[3,])
+baseUS <- as.numeric (base2[6,])
+baseUK <- as.numeric (base2[5,])
+
+# Italie, France Allemagne
+
+matrix_FIG <- matrix (c(baseFrance,baseItaly,baseGermany), nc=(x-39), nr=3, byrow = T)
+barplot (matrix_FIG, beside=T, ylim=c(0,10000), xlab = "Jours", ylab = "Nombre de deces cumules depuis le 1er mars 2020", col=c("lightblue","lightgreen","grey"),legend.text = c("France" ,"Italie","Allemagne"),args.legend=list(x="topleft"), border = NA); box()
+text (112, (matrix_FIG[1,ncol(matrix_FIG)]+300), matrix_FIG[1,ncol(matrix_FIG)])
+text (112, (matrix_FIG[2,ncol(matrix_FIG)]+300), matrix_FIG[2,ncol(matrix_FIG)])
+text (112, (matrix_FIG[3,ncol(matrix_FIG)]+300), matrix_FIG[3,ncol(matrix_FIG)])
+
+
+# US, UK, France
+
+matrix_FIG <- matrix (c(baseUS,baseUK, baseFrance), nc=(x-39), nr=3, byrow = T)
+barplot (matrix_FIG,beside=T, ylim=c(0,2000), xlab = "Jours", ylab = "Nombre de deces cumules depuis le 1er mars 2020", col=c("grey","coral", "lightblue"),legend.text = c("US","UK", "France"),args.legend=list(x="topleft"), border = NA); box() 
+text (112, (matrix_FIG[1,ncol(matrix_FIG)]+70), matrix_FIG[1,ncol(matrix_FIG)])
+text (112, (matrix_FIG[2,ncol(matrix_FIG)]+70), matrix_FIG[2,ncol(matrix_FIG)])
+text (112, (matrix_FIG[3,ncol(matrix_FIG)]+70), matrix_FIG[3,ncol(matrix_FIG)])
+
+
+# Iran, France
+matrix_FIG <- matrix (c(baseIran, baseFrance), nc=(x-39), nr=2, byrow = T)
+barplot (matrix_FIG,beside=T, ylim=c(0,3000), xlab = "Jours", ylab = "Nombre de deces cumules depuis le 1er mars 2020", col=c("coral","lightblue"),legend.text = c("Iran", "France"),args.legend=list(x="topleft"), border = NA); box() 
+text (84, (matrix_FIG[1,ncol(matrix_FIG)]+100), matrix_FIG[1,ncol(matrix_FIG)])
+text (84, (matrix_FIG[2,ncol(matrix_FIG)]+100), matrix_FIG[2,ncol(matrix_FIG)])
+
+
+
+```
+
+Sources : 2019 Novel Coronavirus COVID-19 (2019-nCoV) Data Repository by Johns Hopkins CSSE
+
+
