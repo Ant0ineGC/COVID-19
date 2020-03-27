@@ -4,9 +4,9 @@ library(ggplot2)
 
 setwd("/Users/antoinegaudetchardonnet/Git/COVID-19")
 download.file("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv", 
-    destfile = "time_series_19-covid-Deaths.csv", method = "curl")
+    destfile = "time_series_covid19_deaths_global.csv", method = "curl")
 
-base <- read.csv("time_series_19-covid-Deaths.csv")
+base <- read.csv("time_series_covid19_deaths_global.csv")
 
 base <- base[base$"Province.State" == "",]
 
