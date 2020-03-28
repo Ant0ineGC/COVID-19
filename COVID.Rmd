@@ -1,6 +1,18 @@
+---
+title: "Statistiques COVID-2019 en temps réel"
+author: "Antoine Gaudet Chardonnet"
+date:  '`r format(Sys.time(), "%d %B, %Y")`'
+output: html_document
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, include=FALSE}
 library(directlabels)
 library(ggplot2)
-
 
 base <- read.csv("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv")
 
@@ -37,6 +49,39 @@ colnames(dir) <- c("dc","jours","Pays")
 
 baseIFG <- rbind(di,df,dg, dus, duk,dir)
 
+hospit <- read.csv2("https://github.com/opencovid19-fr/data/raw/master/data-sources/sante-publique-france/covid_hospit.csv")
+
+hospit <- hospit[hospit$sexe == "0",]
+transform(hospit, dep = as.numeric(dep))
+transform(hospit, jour = as.Date(jour))
+hospitidf <- hospit[hospit$dep == 75 | hospit$dep == 91 |hospit$dep == 92 |hospit$dep == 93 |hospit$dep == 94 |hospit$dep == 95 |hospit$dep == 77 ,]
+
+hosp <- data.frame(aggregate(hospit$hosp, by = list(typ2 = hospit$jour), sum),"France")
+hospidf <- data.frame(aggregate(hospitidf$hosp, by = list(typ2 = hospitidf$jour), sum), "IdF")
+colnames(hosp) <- c("jour","hosp","lieu")
+colnames(hospidf) <- c("jour","hosp","lieu")
+
+rea <- data.frame(aggregate(hospit$rea, by = list(typ2 = hospit$jour), sum),"France")
+reaidf <- data.frame(aggregate(hospitidf$rea, by = list(typ2 = hospitidf$jour), sum), "IdF")
+colnames(rea) <- c("jour","rea","lieu")
+colnames(reaidf) <- c("jour","rea","lieu")
+
+dij <- data.frame(dc = c(0,diff(di$dc)), jours = c(1:(x)), Pays = "Journaliers")
+
+dukj <- data.frame(dc = c(0,diff(duk$dc)), jours = c(1:(x)), Pays = "yJournaliers")
+
+dusj <- data.frame(dc = c(0,diff(dus$dc)), jours = c(1:(x)), Pays = "yJournaliers")
+
+dgj <- data.frame(dc = c(0,diff(dg$dc)), jours = c(1:(x)), Pays = "Journaliers")
+
+
+```
+
+```{r eruptions, echo=FALSE}
+
+
+
+
 FIG <- ggplot (baseIFG, aes(x=jours, y=dc, fill=Pays, colour=Pays)) +
 ggtitle("Nombre de décès cumulés depuis le 1er mars 2020") +
 #  geom_bar(stat="identity", position=position_dodge()) +
@@ -45,9 +90,9 @@ geom_line() +
 theme_bw() +
 labs(x = "Jours depuis le 1er mars 2020", y = "Nombre de décès cumulés") +
 scale_x_continuous(breaks=seq(0, x, 15),limits=c(0, (x+3))) + 
-scale_y_continuous(breaks=c(dir[(x),1],duk[(x),1], dg[(x),1], dus[(x),1], di[(x),1], df[(x),1])) 
+scale_y_continuous(breaks=c(dir[(x),1],duk[(x),1], dg[(x),1], dus[(x),1], di[(x),1], df[(x),1])) +
+theme(plot.title = element_text(, size=14, face="bold.italic"))
 
-FIG + theme(plot.title = element_text(, size=14, face="bold.italic"))
 direct.label(FIG, method="last.points") 
 # dc/ jours en France
 
@@ -70,17 +115,7 @@ p + theme(plot.title = element_text(, size=14, face="bold.italic"))
 
 # hospit COVID
 
-hospit <- read.csv2("https://github.com/opencovid19-fr/data/raw/master/data-sources/sante-publique-france/covid_hospit.csv")
 
-hospit <- hospit[hospit$sexe == "0",]
-transform(hospit, dep = as.numeric(dep))
-transform(hospit, jour = as.Date(jour))
-hospitidf <- hospit[hospit$dep == 75 | hospit$dep == 91 |hospit$dep == 92 |hospit$dep == 93 |hospit$dep == 94 |hospit$dep == 95 |hospit$dep == 77 ,]
-
-hosp <- data.frame(aggregate(hospit$hosp, by = list(typ2 = hospit$jour), sum),"France")
-hospidf <- data.frame(aggregate(hospitidf$hosp, by = list(typ2 = hospitidf$jour), sum), "IdF")
-colnames(hosp) <- c("jour","hosp","lieu")
-colnames(hospidf) <- c("jour","hosp","lieu")
 
 
 p<- ggplot(NULL, aes(jour, hosp)) + 
@@ -90,8 +125,8 @@ ggtitle("Hospitalisation pour COVID-19 en Ile de France et en France") +
 scale_y_continuous(name="Nombre de patients hospitalisés") +
 theme_bw() +
 theme(legend.position='none') +
-geom_text(aes(x = hosp$jour, y = (hosp$hosp + 5), label = hosp$hosp), color = "black", size = 2.5) +
-geom_text(aes(x = hospidf$jour, y = (hospidf$hosp + 5), label = hospidf$hosp), color = "black", size = 2.5) +
+geom_text(aes(x = hosp$jour, y = (hosp$hosp + 250), label = hosp$hosp), color = "black", size = 2.5) +
+geom_text(aes(x = hospidf$jour, y = (hospidf$hosp + 250), label = hospidf$hosp), color = "black", size = 2.5) +
 labs(x = "Date")
 
 p + theme(plot.title = element_text(, size=14, face="bold.italic"))
@@ -99,10 +134,6 @@ p + theme(plot.title = element_text(, size=14, face="bold.italic"))
 # Rea COVID
 
 
-rea <- data.frame(aggregate(hospit$rea, by = list(typ2 = hospit$jour), sum),"France")
-reaidf <- data.frame(aggregate(hospitidf$rea, by = list(typ2 = hospitidf$jour), sum), "IdF")
-colnames(rea) <- c("jour","rea","lieu")
-colnames(reaidf) <- c("jour","rea","lieu")
 
 
 p<- ggplot(NULL, aes(jour, rea)) + 
@@ -121,7 +152,6 @@ p + theme(plot.title = element_text(, size=14, face="bold.italic"))
 
 # dc/ jours en Italie
 
-dij <- data.frame(dc = c(0,diff(di$dc)), jours = c(1:(x)), Pays = "Journaliers")
 
 p<- ggplot(NULL, aes(jours, dc)) + 
 geom_col(aes(fill = "Italie"), data = di, alpha = 0.1) +
@@ -138,7 +168,6 @@ p + theme(plot.title = element_text(, size=14, face="bold.italic"))
 
 # dc/ jours en UK
 
-dukj <- data.frame(dc = c(0,diff(duk$dc)), jours = c(1:(x)), Pays = "yJournaliers")
 
 p<- ggplot(NULL, aes(jours, dc)) + 
 geom_col(aes(fill = "yJournaliers"), data = dukj, alpha = 1) +
@@ -155,7 +184,6 @@ p + theme(plot.title = element_text(, size=14, face="bold.italic"))
 
 # dc/ jours en US
 
-dusj <- data.frame(dc = c(0,diff(dus$dc)), jours = c(1:(x)), Pays = "yJournaliers")
 
 p<- ggplot(NULL, aes(jours, dc)) + 
 geom_col(aes(fill = "yJournaliers"), data = dusj, alpha = 1) +
@@ -172,7 +200,6 @@ p + theme(plot.title = element_text(, size=14, face="bold.italic"))
 
 # dc/ jours en Allemagne
 
-dgj <- data.frame(dc = c(0,diff(dg$dc)), jours = c(1:(x)), Pays = "Journaliers")
 
 p<- ggplot(NULL, aes(jours, dc)) + 
 geom_col(aes(fill = "Allemagne"), data = dg, alpha = 0.1) +
@@ -188,4 +215,8 @@ labs(x = "Jours depuis le 1er mars 2020")
 p + theme(plot.title = element_text(, size=14, face="bold.italic"))
 
 
-sapply(hosp,mode)
+```
+
+Sources : 2019 Novel Coronavirus COVID-19 (2019-nCoV) Data Repository by Johns Hopkins CSSE
+
+
