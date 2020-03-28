@@ -86,7 +86,7 @@ colnames(hospidf) <- c("jour","hosp","lieu")
 p<- ggplot(NULL, aes(jour, hosp)) + 
 geom_col(aes(fill = "France"), data = hosp, alpha = 0.1) +
 geom_col(aes(fill = "IdF"), data = hospidf, alpha = 1) +
-ggtitle("Hospitalisation pour COVID-19 en Ile de France et en France") +
+ggtitle("Hospitalisations pour COVID-19 en Ile de France et en France") +
 scale_y_continuous(name="Nombre de patients hospitalisés") +
 theme_bw() +
 theme(legend.position='none') +
@@ -108,7 +108,7 @@ colnames(reaidf) <- c("jour","rea","lieu")
 p<- ggplot(NULL, aes(jour, rea)) + 
 geom_col(aes(fill = "France"), data = rea, alpha = 0.1) +
 geom_col(aes(fill = "IdF"), data = reaidf, alpha = 1) +
-ggtitle("Hospitalisation en réanimation en Ile de France et en France") +
+ggtitle("Hospitalisations en réanimation en Ile de France et en France") +
 scale_y_continuous(name="Nombre de patients hospitalisés") +
 theme_bw() +
 theme(legend.position='none') +
