@@ -58,7 +58,6 @@ p<- ggplot(NULL, aes(jours, dc)) +
 geom_col(aes(fill = "France"), data = df, alpha = 0.1) +
 geom_col(aes(fill = "Journaliers"), data = dfj, alpha = 1) +
 ggtitle("Nombre de décès journaliers en France") +
-scale_x_continuous(breaks=seq(0, x, 15),limits=c(0, (x+3))) + 
 scale_y_continuous(name="Nombre de décès journaliers") +
 theme_bw() +
 theme(legend.position='none') +
@@ -127,7 +126,6 @@ p<- ggplot(NULL, aes(jours, dc)) +
 geom_col(aes(fill = "Italie"), data = di, alpha = 0.1) +
 geom_col(aes(fill = "Journaliers"), data = dij, alpha = 1) +
 ggtitle("Nombre de décès journaliers en Italie") +
-scale_x_continuous(breaks=seq(0, x, 15),limits=c(0, (x+3))) + 
 scale_y_continuous(name="Nombre de décès journaliers") +
 theme_bw() +
 theme(legend.position='none') +
@@ -144,7 +142,6 @@ p<- ggplot(NULL, aes(jours, dc)) +
 geom_col(aes(fill = "yJournaliers"), data = dukj, alpha = 1) +
 geom_col(aes(fill = "UK"), data = duk, alpha = 0.1) +
 ggtitle("Nombre de décès journaliers en Angleterre") +
-scale_x_continuous(breaks=seq(0, x, 15),limits=c(0, (x+3))) + 
 scale_y_continuous(name="Nombre de décès journaliers") +
 theme_bw() +
 theme(legend.position='none') +
@@ -161,7 +158,6 @@ p<- ggplot(NULL, aes(jours, dc)) +
 geom_col(aes(fill = "yJournaliers"), data = dusj, alpha = 1) +
 geom_col(aes(fill = "USA"), data = dus, alpha = 0.1) +
 ggtitle("Nombre de décès journaliers au USA") +
-scale_x_continuous(breaks=seq(0, x, 15),limits=c(0, (x+3))) + 
 scale_y_continuous(name="Nombre de décès journaliers") +
 theme_bw() +
 theme(legend.position='none') +
@@ -178,7 +174,6 @@ p<- ggplot(NULL, aes(jours, dc)) +
 geom_col(aes(fill = "Allemagne"), data = dg, alpha = 0.1) +
 geom_col(aes(fill = "Journaliers"), data = dgj, alpha = 1) +
 ggtitle("Nombre de décès journaliers en Allemagne") +
-scale_x_continuous(breaks=seq(0, x, 10),limits=c(0, (x+3))) + 
 scale_y_continuous(name="Nombre de décès journaliers") +
 theme_bw() +
 theme(legend.position='none') +
