@@ -121,9 +121,8 @@ colnames(reaidf) <- c("Date","rea","lieu")
 FIG <- ggplot (baseIFG, aes(x=Date, y=dc, fill=Pays, colour=Pays)) +
 geom_line() +
 theme_bw() +
-labs(x = "Date", y = "Nombre de décès cumulés") +
 scale_x_date(date_breaks = "week", date_labels = "%d %B", limits = c(as.Date("2020-03-01"),as.Date((Sys.Date()+2)))) +
-scale_y_continuous(breaks=c(dir[(x),1],duk[(x),1], dg[(x),1], dus[(x),1], di[(x),1], df[(x),1], de[(x),1])) +
+scale_y_continuous(name="Nombre de décès cumulés", breaks=c(dir[(x),1],duk[(x),1], dg[(x),1], dus[(x),1], di[(x),1], df[(x),1], de[(x),1])) +
 theme(plot.title = element_text(, size=14, face="bold.italic")) 
 
 direct.label(FIG, method="last.points") 
@@ -250,5 +249,5 @@ p + theme(plot.title = element_text(, size=14, face="bold.italic"))
 
 ```
 
-Sources : 2019 Novel Coronavirus COVID-19 (2019-nCoV) Data Repository by Johns Hopkins CSSE & www.santepubliquefrance.fr & data.gouv.fr
+Sources : 2019 Novel Coronavirus COVID-19 (2019-nCoV) Data Repository by Johns Hopkins CSSE & data.gouv.fr
 
