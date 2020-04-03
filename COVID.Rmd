@@ -249,5 +249,5 @@ p + theme(plot.title = element_text(, size=14, face="bold.italic"))
 
 ```
 
-Sources : 2019 Novel Coronavirus COVID-19 (2019-nCoV) Data Repository by Johns Hopkins CSSE & data.gouv.fr
+Sources : 2019 Novel Coronavirus COVID-19 (2019-nCoV) Data Repository by Johns Hopkins CSSE & Données hospitalières relatives à l'épidémie de COVID-19 par Santé publique France
 
