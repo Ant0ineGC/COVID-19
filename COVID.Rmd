@@ -1,5 +1,5 @@
 ---
-title: "Statistiques COVID-2019 en temps réel"
+title: "Representation graphique de l'épidémie de COVID-2019 en temps réel"
 author: "Antoine Gaudet Chardonnet"
 date:  '`r format(Sys.time(), "%d %B, %Y, %X")`'
 output: html_document
