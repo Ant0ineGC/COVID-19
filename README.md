@@ -4,7 +4,7 @@ Données concerant l'épidémie de COVID19 issues des principales sources, régu
 
 Tout est codé avec VSCode en R.
 
-L'objectif de ce dépot n'est rien d'autre que de mettre en image les données officielles par mes propres moyens. Il existe de nombreux sites utilisant les même données et qui sont plus complets et plus complex. Je ne me mesure pas à eux.
+L'objectif de ce dépot n'est rien d'autre que de mettre en image les données officielles par mes propres moyens. Il existe de nombreux sites utilisant les mêmes données et qui sont plus complets et plus complex. Je ne me mesure pas à eux.
 
 ## Sources de données
 

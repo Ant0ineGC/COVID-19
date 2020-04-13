@@ -1,7 +1,7 @@
 ---
-title: "Representation graphique de l'épidémie de COVID-2019 en temps réel"
+title: "Représentation graphique de l'épidémie de COVID-2019 en temps réel"
 author: "Antoine Gaudet Chardonnet"
-date:  '`r format(Sys.time(), "%d %B, %Y, %X")`'
+date:  '`r format(Sys.time(), "%d %B %Y, %X")`'
 output: html_document
 runtime: shiny
 ---
@@ -20,7 +20,7 @@ library(tidyverse)
 
 setwd("/Users/antoinegaudetchardonnet/Git/COVID-19/COVID-19")
 
-baseDCj <- read.csv ("Deces_jours_mars_avril_.csv")
+baseDCj <- read.csv ("Deces_jours_mars_avril_2.csv")
 baseDCj$Date <- as.Date (baseDCj$Date)
 baseDCj$Deces <- as.numeric (baseDCj$Deces)
 baseDCj$Annee <- as.factor (baseDCj$Annee)
@@ -221,7 +221,7 @@ p<- ggplot(dusj, aes(Date, dc)) +
 ggtitle("Nombre de décès journaliers au USA") +
 
 geom_col(fill = "#4DB4C1") +
-scale_y_continuous(name="Nombre de décès journaliers", limits=c(0, 1500)) +
+scale_y_continuous(name="Nombre de décès journaliers", limits=c(0, 2500)) +
 theme_bw() +
 theme(legend.position='none') +
 geom_text(aes(x = Date, y = (dc + 20), label = dc), color = "black", size = 2.5) 
