@@ -18,7 +18,7 @@ library(ggplot2)
 library(lubridate)
 library(tidyverse)
 
-setwd("/Users/antoinegaudetchardonnet/Git/COVID-19/COVID-19")
+setwd("/Users/antoinegaudetchardonnet/Git/COVID-19/COVID-19/Data")
 
 baseDCj <- read.csv ("Deces_jours_mars_avril_2.csv")
 baseDCj$Date <- as.Date (baseDCj$Date)
@@ -35,12 +35,13 @@ download.file("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/
 download.file("https://www.data.gouv.fr/fr/datasets/r/63352e38-d353-4b54-bfd1-f1b3ee1cabd7", 
     destfile = csv2, method = "curl")
 
+setwd("/Users/antoinegaudetchardonnet/Git/COVID-19/COVID-19/")
 
 # Base Johns Hopkins CSSE
 base <- read.csv("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv")
 
 
-# Suppression de la colonne des Province
+# Suppression de la colonne des Provinces
 base <- base[base$"Province.State" == "",]
 
 # Creation d'une base FR, Italy...et suppression des 43 premières colonnes
