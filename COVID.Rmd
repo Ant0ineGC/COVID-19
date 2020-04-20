@@ -130,7 +130,7 @@ colnames(reaidf) <- c("Date","rea","lieu")
 # direct.label ; affiche la légende à la fin de chaque courbe
 
 FIG <- ggplot (baseIFG, aes(x=Date, y=dc, fill=Pays, colour=Pays)) +
-ggtitle("Nombre de décès cumulés depuis le 1er mars 2020") +
+ggtitle("Nombre de décès COVID-19 cumulés depuis le 1er mars 2020") +
 geom_line() +
 theme_bw() +
 scale_x_date(date_breaks = "week", date_labels = "%d %B", limits = c(as.Date("2020-03-01"),as.Date((Sys.Date()+2)))) +
@@ -143,10 +143,10 @@ direct.label(FIG, method="last.points")
 # initialement geom-col décès par jour et total de mort puis nombre total non affiché par soucis d'echelle
 
 p<- ggplot(dfj, aes(Date, dc)) + 
-ggtitle("Nombre de décès journaliers en France") +
+ggtitle("Nombre de décès COVID-19 journaliers en France") +
 
 geom_col(fill = "#4DB4C1") +
-scale_y_continuous(name="Nombre de décès journaliers", limits=c(0, 1500)) +
+scale_y_continuous(name="Nombre de décès COVID-19 journaliers", limits=c(0, 1500)) +
 theme_bw() +
 theme(legend.position='none') +
 geom_text(aes(x = Date, y = (dc + 20), label = dc), color = "black", size = 2.5) 
@@ -188,10 +188,10 @@ p + theme(plot.title = element_text(, size=14, face="bold.italic"))
 # dc/ jours en Italie
 
 p<- ggplot(dij, aes(Date, dc)) + 
-ggtitle("Nombre de décès journaliers en Italie") +
+ggtitle("Nombre de décès COVID-19 journaliers en Italie") +
 
 geom_col(fill = "#4DB4C1") +
-scale_y_continuous(name="Nombre de décès journaliers", limits=c(0, 1500)) +
+scale_y_continuous(name="Nombre de décès COVID-19 journaliers", limits=c(0, 1500)) +
 theme_bw() +
 theme(legend.position='none') +
 geom_text(aes(x = Date, y = (dc + 20), label = dc), color = "black", size = 2.5) 
@@ -203,10 +203,10 @@ p + theme(plot.title = element_text(, size=14, face="bold.italic"))
 
 
 p<- ggplot(dukj, aes(Date, dc)) + 
-ggtitle("Nombre de décès journaliers en Angleterre") +
+ggtitle("Nombre de décès COVID-19 journaliers en Angleterre") +
 
 geom_col(fill = "#4DB4C1") +
-scale_y_continuous(name="Nombre de décès journaliers", limits=c(0, 1500)) +
+scale_y_continuous(name="Nombre de décès COVID-19 journaliers", limits=c(0, 1500)) +
 theme_bw() +
 theme(legend.position='none') +
 geom_text(aes(x = Date, y = (dc + 20), label = dc), color = "black", size = 2.5) 
@@ -218,10 +218,10 @@ p + theme(plot.title = element_text(, size=14, face="bold.italic"))
 
 
 p<- ggplot(dusj, aes(Date, dc)) + 
-ggtitle("Nombre de décès journaliers au USA") +
+ggtitle("Nombre de décès COVID-19 journaliers au USA") +
 
 geom_col(fill = "#4DB4C1") +
-scale_y_continuous(name="Nombre de décès journaliers", limits=c(0, 2500)) +
+scale_y_continuous(name="Nombre de décès COVID-19 journaliers", limits=c(0, 5000)) +
 theme_bw() +
 theme(legend.position='none') +
 geom_text(aes(x = Date, y = (dc + 20), label = dc), color = "black", size = 2.5) 
@@ -233,9 +233,9 @@ p + theme(plot.title = element_text(, size=14, face="bold.italic"))
 
 
 p<- ggplot(dgj, aes(Date, dc)) + 
-ggtitle("Nombre de décès journaliers en Allemagne") +
+ggtitle("Nombre de décès COVID-19 journaliers en Allemagne") +
 geom_col(fill = "#4DB4C1") +
-scale_y_continuous(name="Nombre de décès journaliers", limits=c(0, 1500)) +
+scale_y_continuous(name="Nombre de décès COVID-19 journaliers", limits=c(0, 1500)) +
 theme_bw() +
 theme(legend.position='none') +
 geom_text(aes(x = Date, y = (dc + 20), label = dc), color = "black", size = 2.5) 
@@ -249,10 +249,10 @@ p + theme(plot.title = element_text(, size=14, face="bold.italic"))
 
 
 p<- ggplot(dnj, aes(Date, dc)) + 
-ggtitle("Nombre de décès journaliers aux Pays-Bas") +
+ggtitle("Nombre de décès COVID-19 journaliers aux Pays-Bas") +
 
 geom_col(fill = "#4DB4C1") +
-scale_y_continuous(name="Nombre de décès journaliers", limits=c(0, 1500)) +
+scale_y_continuous(name="Nombre de décès COVID-19 journaliers", limits=c(0, 1500)) +
 theme_bw() +
 theme(legend.position='none') +
 geom_text(aes(x = Date, y = (dc + 20), label = dc), color = "black", size = 2.5) 
@@ -262,7 +262,7 @@ p + theme(plot.title = element_text(, size=14, face="bold.italic"))
 # Evaluation de la surmortalité
 
 DCj <- ggplot (baseDCj, aes(x=Date, y=Deces, color=Annee)) +
-ggtitle("Mortalité journalière en mars et avril selon les années en France") +
+ggtitle("Mortalité journalière toutes causes confondues en mars et avril selon les années en France") +
 geom_line ()  +
 theme_bw() +
 scale_x_date(date_breaks = "week", date_labels = "%d %B", limits = c(as.Date("2020-03-01"),as.Date("2020-05-05"))) +
