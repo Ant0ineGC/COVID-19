@@ -20,7 +20,7 @@ library(tidyverse)
 
 setwd("/Users/antoinegaudetchardonnet/Git/COVID-19/COVID-19/Data")
 
-baseDCj <- read.csv ("Deces_jours_mars_avril_2.csv")
+baseDCj <- read.csv ("DCjours_annuelV2.csv")
 baseDCj$Date <- as.Date (baseDCj$Date)
 baseDCj$Deces <- as.numeric (baseDCj$Deces)
 baseDCj$Annee <- as.factor (baseDCj$Annee)
@@ -263,10 +263,10 @@ p + theme(plot.title = element_text(, size=14, face="bold.italic"))
 # Evaluation de la surmortalité
 
 DCj <- ggplot (baseDCj, aes(x=Date, y=Deces, color=Annee)) +
-ggtitle("Mortalité journalière toutes causes confondues en mars et avril selon les années en France") +
+ggtitle("Mortalité journalière toutes causes confondues en France") +
 geom_line ()  +
 theme_bw() +
-scale_x_date(date_breaks = "week", date_labels = "%d %B", limits = c(as.Date("2020-03-01"),as.Date("2020-05-05"))) +
+scale_x_date(date_breaks = "month", date_labels = "%b", limits = c(as.Date("2020-01-01"),as.Date("2021-01-10"))) +
 scale_y_continuous(name="Nombre de décès journaliers") +
 theme(plot.title = element_text(, size=14, face="bold.italic")) 
 direct.label(DCj, method="last.points") 
