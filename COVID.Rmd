@@ -14,7 +14,6 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r, include=FALSE}
 
 library(directlabels)
-library(ggplot2)
 library(lubridate)
 library(tidyverse)
 library(ggrepel)
@@ -26,6 +25,7 @@ baseDCj$Date <- as.Date (baseDCj$Date)
 baseDCj$Deces <- as.numeric (baseDCj$Deces)
 baseDCj$Annee <- as.factor (baseDCj$Annee)
 baseDCj <- baseDCj[,-1]
+baseDCj$cumsum <- do.call(c, tapply(baseDCj$Deces, baseDCj$Annee, FUN=cumsum))
 
 csv <- paste("ptime_series_19-covid-Deaths_",Sys.Date(),".csv", sep="" )
 csv2 <- paste("ptime_series_19-covid-Hospit",Sys.Date(),".csv", sep="" )
@@ -135,11 +135,11 @@ FIG <- ggplot (baseIFG, aes(x=Date, y=dc, fill=Pays, colour=Pays)) +
 ggtitle("Nombre de décès COVID-19 cumulés depuis le 1er mars 2020") +
 geom_line() +
 theme_bw() +
-scale_x_date(date_breaks = "week", date_labels = "%d %B", limits = c(as.Date("2020-03-01"),as.Date((Sys.Date()+2)))) +
-scale_y_continuous(name="Nombre de décès cumulés", breaks=c(dir[(x),1],duk[(x),1], dg[(x),1], dus[(x),1], di[(x),1], df[(x),1], de[(x),1])) +
+scale_x_date(date_breaks = "week", date_labels = "%d %B", limits = c(as.Date("2020-03-01"),as.Date((Sys.Date()+5)))) +
+scale_y_continuous(name="Nombre de décès COVID cumulés", breaks=c(dir[(x),1],duk[(x),1], dg[(x),1], dus[(x),1], di[(x),1], df[(x),1], de[(x),1])) +
 theme(plot.title = element_text(, size=14, face="bold.italic")) 
 
-direct.label(FIG, method="last.points") 
+direct.label(FIG, method="last.bumpup") 
 
 # dc/ jours en France
 # initialement geom-col décès par jour et total de mort puis nombre total non affiché par soucis d'echelle
@@ -271,6 +271,15 @@ scale_x_date(date_breaks = "month", date_labels = "%b", limits = c(as.Date("2020
 scale_y_continuous(name="Nombre de décès journaliers") +
 theme(plot.title = element_text(, size=14, face="bold.italic")) 
 direct.label(DCj, method="last.points") 
+
+DCcum <- ggplot (baseDCj, aes(x=Date, y=cumsum, color=Annee)) +
+ggtitle("Mortalité cumulée toutes causes confondues en France") +
+geom_line ()  +
+theme_bw() +
+scale_x_date(date_breaks = "month", date_labels = "%b", limits = c(as.Date("2020-01-01"),as.Date("2021-01-10"))) +
+scale_y_continuous(name="Nombre de décès cumulés", , limits=c(0, 700000)) +
+theme(plot.title = element_text(, size=14, face="bold.italic")) 
+direct.label(DCcum, method="last.bumpup") 
 
 ```
 
