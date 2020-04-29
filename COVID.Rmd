@@ -222,7 +222,7 @@ p<- ggplot(dusj, aes(Date, dc)) +
 ggtitle("Nombre de décès COVID-19 journaliers au USA") +
 
 geom_col(fill = "#4DB4C1") +
-scale_y_continuous(name="Nombre de décès COVID-19 journaliers", limits=c(0, 5000)) +
+scale_y_continuous(name="Nombre de décès COVID-19 journaliers", limits=c(0, 3000)) +
 theme_bw() +
 theme(legend.position='none') +
 geom_text(aes(x = Date, y = (dc + 20), label = dc), color = "black", size = 2.5) 

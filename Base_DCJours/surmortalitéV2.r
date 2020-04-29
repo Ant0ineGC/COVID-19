@@ -4,6 +4,9 @@ library(directlabels)
 
 setwd("/Users/antoinegaudetchardonnet/Git/COVID-19/COVID-19/Base_DCJours")
 
+DC03 <- as.data.frame(readLines("deces-2003.txt"))
+colnames(DC20) <- "Date"
+
 DC20 <- as.data.frame(readLines("deces-2020-t1.txt"))
 colnames(DC20) <- "Date"
 
@@ -34,7 +37,7 @@ colnames(baseDCj) <- c("Date","Deces","Annee")
 
 setwd("/Users/antoinegaudetchardonnet/Git/COVID-19/COVID-19/Data")
 
-# write.csv(x = baseDCj, file = "DCjours_annuelV2.csv")
+write.csv(x = baseDCj, file = "DCjours_annuelV3.csv")
 
 # Evaluation de la surmortalité
 
