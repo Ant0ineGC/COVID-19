@@ -1,7 +1,7 @@
 ---
-title: "Représentation graphique de l'épidémie de COVID-2019 en temps réel"
+title: "Représentation graphique <br> de l'épidémie de COVID-2019"
 author: "Antoine Gaudet Chardonnet"
-date:  '`r format(Sys.time(), "%d %B %Y, %X")`'
+date:  '`r format(Sys.time(), "%d %B %Y, %H:%M")`'
 output: html_document
 runtime: shiny
 ---
@@ -17,6 +17,7 @@ library(directlabels)
 library(ggplot2)
 library(lubridate)
 library(tidyverse)
+library(ggrepel)
 
 setwd("/Users/antoinegaudetchardonnet/Git/COVID-19/COVID-19/Data")
 
@@ -143,14 +144,14 @@ direct.label(FIG, method="last.points")
 # dc/ jours en France
 # initialement geom-col décès par jour et total de mort puis nombre total non affiché par soucis d'echelle
 
-p<- ggplot(dfj, aes(Date, dc)) + 
+p<- ggplot(dfj, aes(Date, dc, label=dc)) + 
 ggtitle("Nombre de décès COVID-19 journaliers en France") +
 
 geom_col(fill = "#4DB4C1") +
 scale_y_continuous(name="Nombre de décès COVID-19 journaliers", limits=c(0, 1500)) +
 theme_bw() +
 theme(legend.position='none') +
-geom_text(aes(x = Date, y = (dc + 20), label = dc), color = "black", size = 2.5) 
+geom_text_repel(data = subset(dfj, dc>30), size = 2.5,color = "black", segment.size  = 0.2, segment.color = "grey50", direction="y") 
 
 p + theme(plot.title = element_text(, size=14, face="bold.italic"))
 
@@ -165,8 +166,8 @@ ggtitle("Patients hospitalisés pour COVID-19 en Ile de France et en France") +
 scale_y_continuous(name="Nombre de patients hospitalisés") +
 theme_bw() +
 theme(legend.position='none') +
-geom_text(aes(x = hosp$Date, y = (hosp$hosp + 400), label = hosp$hosp), color = "black", size = 2.5) +
-geom_text(aes(x = hospidf$Date, y = (hospidf$hosp + 400), label = hospidf$hosp), color = "black", size = 2.5) 
+geom_text_repel(data=hosp, label = hosp$hosp, color = "black", size = 2.5, segment.size  = 0.2, segment.color = "grey50") +
+geom_text_repel(data=hospidf, label = hospidf$hosp, color = "black", size = 2.5,segment.size  = 0.2, segment.color = "grey50") 
 
 p + theme(plot.title = element_text(, size=14, face="bold.italic"))  
 
@@ -181,21 +182,21 @@ ggtitle("Patients hospitalisés en réanimation en Ile de France et en France") 
 scale_y_continuous(name="Nombre de patients hospitalisés") +
 theme_bw() +
 theme(legend.position='none') +
-geom_text(aes(x = rea$Date, y = (rea$rea + 100), label = rea$rea), color = "black", size = 2.5) +
-geom_text(aes(x = reaidf$Date, y = (reaidf$rea + 100), label = reaidf$rea), color = "black", size = 2.5) 
+geom_text_repel(data=rea, label = rea$rea, color = "black", size = 2.5, segment.size  = 0.2, segment.color = "grey50") +
+geom_text_repel(data=reaidf, label = reaidf$rea, color = "black", size = 2.5,segment.size  = 0.2, segment.color = "grey50") 
 
 p + theme(plot.title = element_text(, size=14, face="bold.italic"))
 
 # dc/ jours en Italie
 
-p<- ggplot(dij, aes(Date, dc)) + 
+p<- ggplot(dij, aes(Date, dc, label=dc)) + 
 ggtitle("Nombre de décès COVID-19 journaliers en Italie") +
 
 geom_col(fill = "#4DB4C1") +
 scale_y_continuous(name="Nombre de décès COVID-19 journaliers", limits=c(0, 1500)) +
 theme_bw() +
 theme(legend.position='none') +
-geom_text(aes(x = Date, y = (dc + 20), label = dc), color = "black", size = 2.5) 
+geom_text_repel(data = subset(dij, dc>30), size = 2.5,color = "black", segment.size  = 0.2, segment.color = "grey50", direction="y") 
 
 
 p + theme(plot.title = element_text(, size=14, face="bold.italic"))
@@ -203,14 +204,14 @@ p + theme(plot.title = element_text(, size=14, face="bold.italic"))
 # dc/ jours en UK
 
 
-p<- ggplot(dukj, aes(Date, dc)) + 
+p<- ggplot(dukj, aes(Date, dc, label=dc)) + 
 ggtitle("Nombre de décès COVID-19 journaliers en Angleterre") +
 
 geom_col(fill = "#4DB4C1") +
 scale_y_continuous(name="Nombre de décès COVID-19 journaliers", limits=c(0, 1500)) +
 theme_bw() +
 theme(legend.position='none') +
-geom_text(aes(x = Date, y = (dc + 20), label = dc), color = "black", size = 2.5) 
+geom_text_repel(data = subset(dukj, dc>30), size = 2.5,color = "black", segment.size  = 0.2, segment.color = "grey50", direction="y") 
 
 
 p + theme(plot.title = element_text(, size=14, face="bold.italic"))
@@ -218,14 +219,14 @@ p + theme(plot.title = element_text(, size=14, face="bold.italic"))
 # dc/ jours en US
 
 
-p<- ggplot(dusj, aes(Date, dc)) + 
+p<- ggplot(dusj, aes(Date, dc, label=dc)) + 
 ggtitle("Nombre de décès COVID-19 journaliers au USA") +
 
 geom_col(fill = "#4DB4C1") +
 scale_y_continuous(name="Nombre de décès COVID-19 journaliers", limits=c(0, 3000)) +
 theme_bw() +
 theme(legend.position='none') +
-geom_text(aes(x = Date, y = (dc + 20), label = dc), color = "black", size = 2.5) 
+geom_text_repel(data = subset(dusj, dc>30), size = 2.5,color = "black", segment.size  = 0.2, segment.color = "grey50", direction="y") 
 
 
 p + theme(plot.title = element_text(, size=14, face="bold.italic"))
@@ -233,13 +234,13 @@ p + theme(plot.title = element_text(, size=14, face="bold.italic"))
 # dc/ jours en Allemagne
 
 
-p<- ggplot(dgj, aes(Date, dc)) + 
+p<- ggplot(dgj, aes(Date, dc, label=dc)) + 
 ggtitle("Nombre de décès COVID-19 journaliers en Allemagne") +
 geom_col(fill = "#4DB4C1") +
 scale_y_continuous(name="Nombre de décès COVID-19 journaliers", limits=c(0, 1500)) +
 theme_bw() +
 theme(legend.position='none') +
-geom_text(aes(x = Date, y = (dc + 20), label = dc), color = "black", size = 2.5) 
+geom_text_repel(data = subset(dgj, dc>30), size = 2.5,color = "black", segment.size  = 0.2, segment.color = "grey50", direction="y") 
 
 
 p + theme(plot.title = element_text(, size=14, face="bold.italic"))
@@ -249,14 +250,14 @@ p + theme(plot.title = element_text(, size=14, face="bold.italic"))
 # dc/ jours aux pays-bas
 
 
-p<- ggplot(dnj, aes(Date, dc)) + 
+p<- ggplot(dnj, aes(Date, dc, label=dc)) + 
 ggtitle("Nombre de décès COVID-19 journaliers aux Pays-Bas") +
 
 geom_col(fill = "#4DB4C1") +
 scale_y_continuous(name="Nombre de décès COVID-19 journaliers", limits=c(0, 1500)) +
 theme_bw() +
 theme(legend.position='none') +
-geom_text(aes(x = Date, y = (dc + 20), label = dc), color = "black", size = 2.5) 
+geom_text_repel(data = subset(dnj, dc>30), size = 2.5,color = "black", segment.size  = 0.2, segment.color = "grey50", direction="y") 
 
 p + theme(plot.title = element_text(, size=14, face="bold.italic"))
 
