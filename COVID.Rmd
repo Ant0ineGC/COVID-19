@@ -118,6 +118,28 @@ colnames(rea) <- c("Date","rea","lieu")
 colnames(reaidf) <- c("Date","rea","lieu")
 
 
+# Base Santé publique hospit quotidienne france
+incid_hospit <- read.csv2("https://www.data.gouv.fr/en/datasets/r/6fadff46-9efd-4c53-942a-54aca783c30c")
+
+# Mise en forme de la base
+incid_hospit$dep[incid_hospit$dep %in% c("2A", "2B")] <- "20"
+transform(incid_hospit, dep = as.numeric(dep))
+transform(incid_hospit, jour = as.Date(jour))
+incid_hospit$jour <- as.Date(incid_hospit$jour)
+incid_hospitidf <- incid_hospit[incid_hospit$dep == 75 | incid_hospit$dep == 91 |incid_hospit$dep == 92 |incid_hospit$dep == 93 |incid_hospit$dep == 94 |incid_hospit$dep == 95 |incid_hospit$dep == 77 ,]
+
+# hosp = hospitalisation quotdienne en France
+incid_hosp <- data.frame(aggregate(incid_hospit$incid_hosp, by = list(typ2 = incid_hospit$jour), sum),"France")
+incid_hospidf <- data.frame(aggregate(incid_hospitidf$incid_hosp, by = list(typ2 = incid_hospitidf$jour), sum), "IdF")
+colnames(incid_hosp) <- c("Date","hosp","lieu")
+colnames(incid_hospidf) <- c("Date","hosp","lieu")
+
+# data hospitalisation quotdienne en réa
+incid_rea <- data.frame(aggregate(incid_hospit$incid_rea, by = list(typ2 = incid_hospit$jour), sum),"France")
+incid_reaidf <- data.frame(aggregate(incid_hospitidf$incid_rea, by = list(typ2 = incid_hospitidf$jour), sum), "IdF")
+colnames(incid_rea) <- c("Date","rea","lieu")
+colnames(incid_reaidf) <- c("Date","rea","lieu")
+
 ```
 
 
@@ -159,6 +181,19 @@ p + theme(plot.title = element_text(, size=14, face="bold.italic"))
 # hospit COVID
 
 p<- ggplot(NULL, aes(Date, hosp)) + 
+geom_col(data = incid_hosp, alpha = 0.3, fill = "#FDAC88") +
+geom_col(data = incid_hospidf, alpha = 1, fill = "#4DB4C1") +
+
+ggtitle("Hospitalisations quotidiennes pour COVID-19 en IdF et en France") +
+scale_y_continuous(name="Nombre de patients hospitalisés") +
+theme_bw() +
+theme(legend.position='none') +
+geom_text_repel(data=incid_hosp, label = incid_hosp$hosp, color = "black", size = 2.5, segment.size  = 0.2, segment.color = "grey50") +
+geom_text_repel(data=incid_hospidf, label = incid_hospidf$hosp, color = "black", size = 2.5,segment.size  = 0.2, segment.color = "grey50") 
+
+p + theme(plot.title = element_text(, size=14, face="bold.italic"))  
+
+p<- ggplot(NULL, aes(Date, hosp)) + 
 geom_col(data = hosp, alpha = 0.3, fill = "#FDAC88") +
 geom_col(data = hospidf, alpha = 1, fill = "#4DB4C1") +
 
@@ -172,8 +207,20 @@ geom_text_repel(data=hospidf, label = hospidf$hosp, color = "black", size = 2.5,
 p + theme(plot.title = element_text(, size=14, face="bold.italic"))  
 
 
-
 # Rea COVID
+
+p<- ggplot(NULL, aes(Date, rea)) + 
+geom_col(data = incid_rea, alpha = 0.3, fill = "#FDAC88") +
+geom_col(data = incid_reaidf, alpha = 1, fill = "#4DB4C1") +
+
+ggtitle("Hospitalisations quotidiennes en réa pour COVID-19 en IdF et en France") +
+scale_y_continuous(name="Nombre de patients hospitalisés") +
+theme_bw() +
+theme(legend.position='none') +
+geom_text_repel(data=incid_rea, label = incid_rea$rea, color = "black", size = 2.5, segment.size  = 0.2, segment.color = "grey50") +
+geom_text_repel(data=incid_reaidf, label = incid_reaidf$rea, color = "black", size = 2.5,segment.size  = 0.2, segment.color = "grey50") 
+
+p + theme(plot.title = element_text(, size=14, face="bold.italic"))  
 
 p<- ggplot(NULL, aes(Date, rea)) + 
 geom_col(data = rea, alpha = 0.3, fill = "#FDAC88") +
@@ -186,6 +233,7 @@ geom_text_repel(data=rea, label = rea$rea, color = "black", size = 2.5, segment.
 geom_text_repel(data=reaidf, label = reaidf$rea, color = "black", size = 2.5,segment.size  = 0.2, segment.color = "grey50") 
 
 p + theme(plot.title = element_text(, size=14, face="bold.italic"))
+
 
 # dc/ jours en Italie
 

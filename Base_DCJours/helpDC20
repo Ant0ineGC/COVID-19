@@ -1,0 +1,8 @@
+
+
+DC20 <- as.data.frame(read.csv2("2020-04-30_deces_quotidiens_departement.csv") )
+DC20 <- select(filter (DC20, Zone == "France"), Date_evenement,Total_deces_2020)
+DC20$Freq <- c(0,diff(DC20$Total_deces_2020))
+
+
+write.csv(x = DC20, file = "DC20.csv")
