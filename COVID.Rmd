@@ -184,7 +184,7 @@ p<- ggplot(NULL, aes(Date, hosp)) +
 geom_col(data = incid_hosp, alpha = 0.3, fill = "#FDAC88") +
 geom_col(data = incid_hospidf, alpha = 1, fill = "#4DB4C1") +
 
-ggtitle("Hospitalisations quotidiennes pour COVID-19 en IdF et en France") +
+ggtitle("Hospitalisations quotidiennes pour COVID-19 en Ile de France et\n en France") +
 scale_y_continuous(name="Nombre de patients hospitalisés") +
 theme_bw() +
 theme(legend.position='none') +
@@ -197,7 +197,7 @@ p<- ggplot(NULL, aes(Date, hosp)) +
 geom_col(data = hosp, alpha = 0.3, fill = "#FDAC88") +
 geom_col(data = hospidf, alpha = 1, fill = "#4DB4C1") +
 
-ggtitle("Patients hospitalisés pour COVID-19 en Ile de France et en France") +
+ggtitle("Patients hospitalisés pour COVID-19 en Ile de France et\n en France") +
 scale_y_continuous(name="Nombre de patients hospitalisés") +
 theme_bw() +
 theme(legend.position='none') +
@@ -213,7 +213,7 @@ p<- ggplot(NULL, aes(Date, rea)) +
 geom_col(data = incid_rea, alpha = 0.3, fill = "#FDAC88") +
 geom_col(data = incid_reaidf, alpha = 1, fill = "#4DB4C1") +
 
-ggtitle("Hospitalisations quotidiennes en réa pour COVID-19 en IdF et en France") +
+ggtitle("Hospitalisations quotidiennes en réanimation pour COVID-19\n en Ile de France et en France") +
 scale_y_continuous(name="Nombre de patients hospitalisés") +
 theme_bw() +
 theme(legend.position='none') +
@@ -225,7 +225,7 @@ p + theme(plot.title = element_text(, size=14, face="bold.italic"))
 p<- ggplot(NULL, aes(Date, rea)) + 
 geom_col(data = rea, alpha = 0.3, fill = "#FDAC88") +
 geom_col(data = reaidf, alpha = 1, fill = "#4DB4C1") +
-ggtitle("Patients hospitalisés en réanimation en Ile de France et en France") +
+ggtitle("Patients hospitalisés en réanimation pour COVID-19\n en Ile de France et en France") +
 scale_y_continuous(name="Nombre de patients hospitalisés") +
 theme_bw() +
 theme(legend.position='none') +
