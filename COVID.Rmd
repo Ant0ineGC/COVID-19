@@ -17,6 +17,7 @@ library(directlabels)
 library(lubridate)
 library(tidyverse)
 library(ggrepel)
+library(plotly)
 
 setwd("/Users/antoinegaudetchardonnet/Git/COVID-19/COVID-19/Data")
 
@@ -168,59 +169,65 @@ direct.label(FIG, method="last.bumpup")
 
 p<- ggplot(dfj, aes(Date, dc, label=dc)) + 
 ggtitle("Nombre de décès COVID-19 journaliers en France") +
-
 geom_col(fill = "#4DB4C1") +
 scale_y_continuous(name="Nombre de décès COVID-19 journaliers", limits=c(0, 1500)) +
 theme_bw() +
 theme(legend.position='none') +
-geom_text_repel(data = subset(dfj, dc>30), size = 2.5,color = "black", segment.size  = 0.2, segment.color = "grey50", direction="y") 
+geom_text_repel(data = subset(dfj, dc>30), size = 2.5,color = "black", segment.size  = 0.2, segment.color = "grey50", direction="y") +
+theme(plot.title = element_text(, size=14, face="bold.italic"))
 
-p + theme(plot.title = element_text(, size=14, face="bold.italic"))
-
+p
 
 # hospit COVID
+
+# hospit quotidiennes
 
 p<- ggplot(NULL, aes(Date, hosp)) + 
 geom_col(data = incid_hosp, alpha = 0.3, fill = "#FDAC88") +
 geom_col(data = incid_hospidf, alpha = 1, fill = "#4DB4C1") +
-
 ggtitle("Hospitalisations quotidiennes pour COVID-19 en Ile de France et\n en France") +
 scale_y_continuous(name="Nombre de patients hospitalisés") +
 theme_bw() +
 theme(legend.position='none') +
 geom_text_repel(data=incid_hosp, label = incid_hosp$hosp, color = "black", size = 2.5, segment.size  = 0.2, segment.color = "grey50") +
-geom_text_repel(data=incid_hospidf, label = incid_hospidf$hosp, color = "black", size = 2.5,segment.size  = 0.2, segment.color = "grey50") 
+geom_text_repel(data=incid_hospidf, label = incid_hospidf$hosp, color = "black", size = 2.5,segment.size  = 0.2, segment.color = "grey50") +
+theme(plot.title = element_text(, size=14, face="bold.italic")) 
 
-p + theme(plot.title = element_text(, size=14, face="bold.italic"))  
+p
 
-p<- ggplot(NULL, aes(Date, hosp)) + 
+# hospit en cours
+
+p<- ggplot(NULL, aes(x = Date, y = hosp, label = hosp)) + 
 geom_col(data = hosp, alpha = 0.3, fill = "#FDAC88") +
 geom_col(data = hospidf, alpha = 1, fill = "#4DB4C1") +
-
 ggtitle("Patients hospitalisés pour COVID-19 en Ile de France et\n en France") +
 scale_y_continuous(name="Nombre de patients hospitalisés") +
 theme_bw() +
 theme(legend.position='none') +
 geom_text_repel(data=hosp, label = hosp$hosp, color = "black", size = 2.5, segment.size  = 0.2, segment.color = "grey50") +
-geom_text_repel(data=hospidf, label = hospidf$hosp, color = "black", size = 2.5,segment.size  = 0.2, segment.color = "grey50") 
+geom_text_repel(data=hospidf, label = hospidf$hosp, color = "black", size = 2.5,segment.size  = 0.2, segment.color = "grey50") +
+theme(plot.title = element_text(, size=14, face="bold.italic")) 
 
-p + theme(plot.title = element_text(, size=14, face="bold.italic"))  
-
+p
 
 # Rea COVID
+
+# hospit quotidnne en réa
 
 p<- ggplot(NULL, aes(Date, rea)) + 
 geom_col(data = incid_rea, alpha = 0.3, fill = "#FDAC88") +
 geom_col(data = incid_reaidf, alpha = 1, fill = "#4DB4C1") +
-
 ggtitle("Hospitalisations quotidiennes en réanimation pour COVID-19\n en Ile de France et en France") +
 scale_y_continuous(name="Nombre de patients hospitalisés") +
 theme_bw() +
 theme(legend.position='none') +
 geom_text_repel(data=incid_rea, label = incid_rea$rea, color = "black", size = 2.5, segment.size  = 0.2, segment.color = "grey50") +
-geom_text_repel(data=incid_reaidf, label = incid_reaidf$rea, color = "black", size = 2.5,segment.size  = 0.2, segment.color = "grey50") 
+geom_text_repel(data=incid_reaidf, label = incid_reaidf$rea, color = "black", size = 2.5,segment.size  = 0.2, segment.color = "grey50") +
+theme(plot.title = element_text(, size=14, face="bold.italic"))  
 
-p + theme(plot.title = element_text(, size=14, face="bold.italic"))  
+p
+
+# Patient en réa
 
 p<- ggplot(NULL, aes(Date, rea)) + 
 geom_col(data = rea, alpha = 0.3, fill = "#FDAC88") +
@@ -230,57 +237,51 @@ scale_y_continuous(name="Nombre de patients hospitalisés") +
 theme_bw() +
 theme(legend.position='none') +
 geom_text_repel(data=rea, label = rea$rea, color = "black", size = 2.5, segment.size  = 0.2, segment.color = "grey50") +
-geom_text_repel(data=reaidf, label = reaidf$rea, color = "black", size = 2.5,segment.size  = 0.2, segment.color = "grey50") 
+geom_text_repel(data=reaidf, label = reaidf$rea, color = "black", size = 2.5,segment.size  = 0.2, segment.color = "grey50") +
+theme(plot.title = element_text(, size=14, face="bold.italic"))
 
-p + theme(plot.title = element_text(, size=14, face="bold.italic"))
-
+p
 
 # dc/ jours en Italie
 
 p<- ggplot(dij, aes(Date, dc, label=dc)) + 
 ggtitle("Nombre de décès COVID-19 journaliers en Italie") +
-
 geom_col(fill = "#4DB4C1") +
 scale_y_continuous(name="Nombre de décès COVID-19 journaliers", limits=c(0, 1500)) +
 theme_bw() +
 theme(legend.position='none') +
-geom_text_repel(data = subset(dij, dc>30), size = 2.5,color = "black", segment.size  = 0.2, segment.color = "grey50", direction="y") 
+geom_text_repel(data = subset(dij, dc>30), size = 2.5,color = "black", segment.size  = 0.2, segment.color = "grey50", direction="y") + 
+theme(plot.title = element_text(, size=14, face="bold.italic"))
 
-
-p + theme(plot.title = element_text(, size=14, face="bold.italic"))
+p
 
 # dc/ jours en UK
 
-
 p<- ggplot(dukj, aes(Date, dc, label=dc)) + 
 ggtitle("Nombre de décès COVID-19 journaliers en Angleterre") +
-
 geom_col(fill = "#4DB4C1") +
 scale_y_continuous(name="Nombre de décès COVID-19 journaliers", limits=c(0, 1500)) +
 theme_bw() +
 theme(legend.position='none') +
-geom_text_repel(data = subset(dukj, dc>30), size = 2.5,color = "black", segment.size  = 0.2, segment.color = "grey50", direction="y") 
+geom_text_repel(data = subset(dukj, dc>30), size = 2.5,color = "black", segment.size  = 0.2, segment.color = "grey50", direction="y") +
+theme(plot.title = element_text(, size=14, face="bold.italic"))
 
-
-p + theme(plot.title = element_text(, size=14, face="bold.italic"))
+p
 
 # dc/ jours en US
 
-
 p<- ggplot(dusj, aes(Date, dc, label=dc)) + 
 ggtitle("Nombre de décès COVID-19 journaliers au USA") +
-
 geom_col(fill = "#4DB4C1") +
 scale_y_continuous(name="Nombre de décès COVID-19 journaliers", limits=c(0, 3000)) +
 theme_bw() +
 theme(legend.position='none') +
-geom_text_repel(data = subset(dusj, dc>30), size = 2.5,color = "black", segment.size  = 0.2, segment.color = "grey50", direction="y") 
+geom_text_repel(data = subset(dusj, dc>30), size = 2.5,color = "black", segment.size  = 0.2, segment.color = "grey50", direction="y") +
+theme(plot.title = element_text(, size=14, face="bold.italic"))
 
-
-p + theme(plot.title = element_text(, size=14, face="bold.italic"))
+p
 
 # dc/ jours en Allemagne
-
 
 p<- ggplot(dgj, aes(Date, dc, label=dc)) + 
 ggtitle("Nombre de décès COVID-19 journaliers en Allemagne") +
@@ -288,28 +289,27 @@ geom_col(fill = "#4DB4C1") +
 scale_y_continuous(name="Nombre de décès COVID-19 journaliers", limits=c(0, 1500)) +
 theme_bw() +
 theme(legend.position='none') +
-geom_text_repel(data = subset(dgj, dc>30), size = 2.5,color = "black", segment.size  = 0.2, segment.color = "grey50", direction="y") 
+geom_text_repel(data = subset(dgj, dc>30), size = 2.5,color = "black", segment.size  = 0.2, segment.color = "grey50", direction="y") +
+theme(plot.title = element_text(, size=14, face="bold.italic"))
 
-
-p + theme(plot.title = element_text(, size=14, face="bold.italic"))
-
-
+p
 
 # dc/ jours aux pays-bas
 
-
 p<- ggplot(dnj, aes(Date, dc, label=dc)) + 
 ggtitle("Nombre de décès COVID-19 journaliers aux Pays-Bas") +
-
 geom_col(fill = "#4DB4C1") +
 scale_y_continuous(name="Nombre de décès COVID-19 journaliers", limits=c(0, 1500)) +
 theme_bw() +
 theme(legend.position='none') +
-geom_text_repel(data = subset(dnj, dc>30), size = 2.5,color = "black", segment.size  = 0.2, segment.color = "grey50", direction="y") 
+geom_text_repel(data = subset(dnj, dc>30), size = 2.5,color = "black", segment.size  = 0.2, segment.color = "grey50", direction="y") +
+theme(plot.title = element_text(, size=14, face="bold.italic"))
 
-p + theme(plot.title = element_text(, size=14, face="bold.italic"))
+p
 
 # Evaluation de la surmortalité
+
+# DC par jours
 
 DCj <- ggplot (baseDCj, aes(x=Date, y=Deces, color=Annee)) +
 ggtitle("Mortalité journalière toutes causes confondues en France") +
@@ -318,7 +318,10 @@ theme_bw() +
 scale_x_date(date_breaks = "month", date_labels = "%b", limits = c(as.Date("2020-01-01"),as.Date("2021-01-10"))) +
 scale_y_continuous(name="Nombre de décès journaliers") +
 theme(plot.title = element_text(, size=14, face="bold.italic")) 
+
 direct.label(DCj, method="last.points") 
+
+# DC cumulé
 
 DCcum <- ggplot (baseDCj, aes(x=Date, y=cumsum, color=Annee)) +
 ggtitle("Mortalité cumulée toutes causes confondues en France") +
@@ -327,6 +330,7 @@ theme_bw() +
 scale_x_date(date_breaks = "month", date_labels = "%b", limits = c(as.Date("2020-01-01"),as.Date("2021-01-10"))) +
 scale_y_continuous(name="Nombre de décès cumulés", , limits=c(0, 700000)) +
 theme(plot.title = element_text(, size=14, face="bold.italic")) 
+
 direct.label(DCcum, method="last.bumpup") 
 
 ```
