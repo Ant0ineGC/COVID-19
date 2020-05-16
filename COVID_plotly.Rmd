@@ -2,11 +2,19 @@
 title: "Représentation graphique <br> de l'épidémie de COVID-2019"
 author: "Antoine Gaudet Chardonnet"
 date:  '`r format(Sys.time(), "%d %B %Y, %H:%M")`'
-output: html_document
+output: 
+    html_document: 
+        theme: cerulean
 runtime: shiny
 ---
 
-
+<style type="text/css">
+.main-container {
+  max-width: 1800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -149,7 +157,7 @@ colnames(incid_reaidf) <- c("Date","rea","lieu")
 
 
 
-```{r eruptions, echo=FALSE, warning=FALSE, message=FALSE, fig.width=8, fig.height=5, fig.fullwidth=TRUE}
+```{r eruptions, echo=FALSE, warning=FALSE, message=FALSE, fig.fullwidth=TRUE, fig.width = 10, fig.height = 6}
 
 # warning et message false pour ne pas affiché les alertes
 
@@ -161,12 +169,11 @@ colnames(incid_reaidf) <- c("Date","rea","lieu")
 p <- ggplot (baseIFG, aes(x=Date, y=dc, fill=Pays, colour=Pays, text = dc)) +
 ggtitle("Nombre de décès COVID-19 cumulés depuis le 1er mars 2020") +
 geom_line() +
-theme_bw() +
-scale_x_date(date_breaks = "week", date_labels = "%d %B", limits = c(as.Date("2020-03-01"),as.Date((Sys.Date()+5)))) +
+scale_x_date(date_breaks = "week", date_labels = "%d %B", limits = c(as.Date("2020-03-01"),as.Date((Sys.Date())))) +
 scale_y_continuous(name="Nombre de décès COVID cumulés") +
-theme(plot.title = element_text(, size=14, face="bold.italic")) 
+theme_classic() + theme(plot.title = element_text(size=14, face="bold", color = "#317eac"))
 
-fig <- ggplotly(p, tooltip = c("Pays", "Date", "text")) %>% config(displayModeBar=FALSE) %>% layout(showlegend = FALSE)
+fig <- ggplotly(p, tooltip = c("colour", "Date", "text")) %>% config(displayModeBar=FALSE) %>% layout(showlegend = FALSE)
 fig
 
 
@@ -177,9 +184,8 @@ p<- ggplot(dfj, aes(Date, dc, label=dc, text = paste0("Nombre de décès : ", dc
 ggtitle("Nombre de décès COVID-19 journaliers en France") +
 geom_col(fill = "#4DB4C1") +
 scale_y_continuous(name="Nombre de décès COVID-19 journaliers", limits=c(0, 1500)) +
-theme_bw() +
-theme(legend.position='none') +
-theme(plot.title = element_text(, size=14, face="bold.italic"))
+theme_classic() + theme(plot.title = element_text(size=14, face="bold", color = "#317eac")) +
+theme(legend.position='none')
 
 fig <- ggplotly(p, tooltip = c("Date", "text")) %>% config(displayModeBar=FALSE)
 fig
@@ -193,9 +199,8 @@ geom_col(data = incid_hosp, alpha = 0.3, fill = "#FDAC88") +
 geom_col(data = incid_hospidf, alpha = 1, fill = "#4DB4C1") +
 ggtitle("Hospitalisations quotidiennes pour COVID-19 en Ile de France et\n en France") +
 scale_y_continuous(name="Nombre de patients hospitalisés") +
-theme_bw() +
-theme(legend.position='none') +
-theme(plot.title = element_text(, size=14, face="bold.italic")) 
+theme_classic() + theme(plot.title = element_text(size=14, face="bold", color = "#317eac")) +
+theme(legend.position='none')
 
 fig <- ggplotly(p, tooltip = c("Date", "text")) %>% config(displayModeBar=FALSE)
 fig
@@ -207,9 +212,8 @@ geom_col(data = hosp, alpha = 0.3, fill = "#FDAC88") +
 geom_col(data = hospidf, alpha = 1, fill = "#4DB4C1") +
 ggtitle("Patients hospitalisés pour COVID-19 en Ile de France et\n en France") +
 scale_y_continuous(name="Nombre de patients hospitalisés") +
-theme_bw() +
-theme(legend.position='none') +
-theme(plot.title = element_text(, size=14, face="bold.italic")) 
+theme_classic() + theme(plot.title = element_text(size=14, face="bold", color = "#317eac")) +
+theme(legend.position='none')
 
 fig <- ggplotly(p, tooltip = c("Date", "text")) %>% config(displayModeBar=FALSE)
 fig
@@ -223,9 +227,8 @@ geom_col(data = incid_rea, alpha = 0.3, fill = "#FDAC88") +
 geom_col(data = incid_reaidf, alpha = 1, fill = "#4DB4C1") +
 ggtitle("Hospitalisations quotidiennes en réanimation pour COVID-19\n en Ile de France et en France") +
 scale_y_continuous(name="Nombre de patients hospitalisés") +
-theme_bw() +
-theme(legend.position='none') +
-theme(plot.title = element_text(, size=14, face="bold.italic"))  
+theme_classic() + theme(plot.title = element_text(size=14, face="bold", color = "#317eac")) +
+theme(legend.position='none')
 
 fig <- ggplotly(p, tooltip = c("Date", "text")) %>% config(displayModeBar=FALSE)
 fig
@@ -237,9 +240,8 @@ geom_col(data = rea, alpha = 0.3, fill = "#FDAC88") +
 geom_col(data = reaidf, alpha = 1, fill = "#4DB4C1") +
 ggtitle("Patients hospitalisés en réanimation pour COVID-19\n en Ile de France et en France") +
 scale_y_continuous(name="Nombre de patients hospitalisés") +
-theme_bw() +
-theme(legend.position='none') +
-theme(plot.title = element_text(, size=14, face="bold.italic"))
+theme_classic() + theme(plot.title = element_text(size=14, face="bold", color = "#317eac")) +
+theme(legend.position='none')
 
 fig <- ggplotly(p, tooltip = c("Date", "text")) %>% config(displayModeBar=FALSE)
 fig
@@ -250,9 +252,8 @@ p<- ggplot(dij, aes(Date, dc, label=dc, text = paste0("Nombre de décès : ", dc
 ggtitle("Nombre de décès COVID-19 journaliers en Italie") +
 geom_col(fill = "#4DB4C1") +
 scale_y_continuous(name="Nombre de décès COVID-19 journaliers", limits=c(0, 1500)) +
-theme_bw() +
-theme(legend.position='none') +
-theme(plot.title = element_text(, size=14, face="bold.italic"))
+theme_classic() + theme(plot.title = element_text(size=14, face="bold", color = "#317eac")) +
+theme(legend.position='none')
 
 fig <- ggplotly(p, tooltip = c("Date", "text")) %>% config(displayModeBar=FALSE)
 fig
@@ -263,9 +264,8 @@ p<- ggplot(dukj, aes(Date, dc, label=dc, text = paste0("Nombre de décès : ", d
 ggtitle("Nombre de décès COVID-19 journaliers en Angleterre") +
 geom_col(fill = "#4DB4C1") +
 scale_y_continuous(name="Nombre de décès COVID-19 journaliers", limits=c(0, 1500)) +
-theme_bw() +
-theme(legend.position='none') +
-theme(plot.title = element_text(, size=14, face="bold.italic"))
+theme_classic() + theme(plot.title = element_text(size=14, face="bold", color = "#317eac")) +
+theme(legend.position='none')
 
 fig <- ggplotly(p, tooltip = c("Date", "text")) %>% config(displayModeBar=FALSE)
 fig
@@ -276,9 +276,8 @@ p<- ggplot(dusj, aes(Date, dc, label=dc, text = paste0("Nombre de décès : ", d
 ggtitle("Nombre de décès COVID-19 journaliers au USA") +
 geom_col(fill = "#4DB4C1") +
 scale_y_continuous(name="Nombre de décès COVID-19 journaliers", limits=c(0, 3000)) +
-theme_bw() +
-theme(legend.position='none') +
-theme(plot.title = element_text(, size=14, face="bold.italic"))
+theme_classic() + theme(plot.title = element_text(size=14, face="bold", color = "#317eac")) +
+theme(legend.position='none')
 
 fig <- ggplotly(p, tooltip = c("Date", "text")) %>% config(displayModeBar=FALSE)
 fig
@@ -289,9 +288,8 @@ p<- ggplot(dgj, aes(Date, dc, label=dc, text = paste0("Nombre de décès : ", dc
 ggtitle("Nombre de décès COVID-19 journaliers en Allemagne") +
 geom_col(fill = "#4DB4C1") +
 scale_y_continuous(name="Nombre de décès COVID-19 journaliers", limits=c(0, 1500)) +
-theme_bw() +
-theme(legend.position='none') +
-theme(plot.title = element_text(, size=14, face="bold.italic"))
+theme_classic() + theme(plot.title = element_text(size=14, face="bold", color = "#317eac")) +
+theme(legend.position='none')
 
 fig <- ggplotly(p, tooltip = c("Date", "text")) %>% config(displayModeBar=FALSE)
 fig
@@ -302,9 +300,8 @@ p<- ggplot(dnj, aes(Date, dc, label=dc, text = paste0("Nombre de décès : ", dc
 ggtitle("Nombre de décès COVID-19 journaliers aux Pays-Bas") +
 geom_col(fill = "#4DB4C1") +
 scale_y_continuous(name="Nombre de décès COVID-19 journaliers", limits=c(0, 1500)) +
-theme_bw() +
-theme(legend.position='none') +
-theme(plot.title = element_text(, size=14, face="bold.italic"))
+theme_classic() + theme(plot.title = element_text(size=14, face="bold", color = "#317eac")) +
+theme(legend.position='none')
 
 fig <- ggplotly(p, tooltip = c("Date", "text")) %>% config(displayModeBar=FALSE)
 fig
@@ -316,10 +313,9 @@ fig
 DCj <- ggplot (baseDCj, aes(x=Date, y=Deces, color=Annee, text = Deces)) + 
 ggtitle("Mortalité journalière toutes causes confondues en France") +
 geom_line ()  +
-theme_bw() +
+theme_classic() + theme(plot.title = element_text(size=14, face="bold", color = "#317eac")) +
 scale_x_date(date_breaks = "month", date_labels = "%b", limits = c(as.Date("2020-01-01"),as.Date("2021-01-10"))) +
-scale_y_continuous(name="Nombre de décès journaliers") +
-theme(plot.title = element_text(, size=14, face="bold.italic")) 
+scale_y_continuous(name="Nombre de décès journaliers")
 
 fig <- ggplotly(DCj, tooltip = c("Date", "text")) %>% config(displayModeBar=FALSE) %>% layout(showlegend = FALSE)
 fig
@@ -329,10 +325,9 @@ fig
 DCcum <- ggplot (baseDCj, aes(x=Date, y=cumsum, color=Annee, text = cumsum)) + 
 ggtitle("Mortalité cumulée toutes causes confondues en France") +
 geom_line ()  +
-theme_bw() +
+theme_classic() + theme(plot.title = element_text(size=14, face="bold", color = "#317eac")) +
 scale_x_date(date_breaks = "month", date_labels = "%b", limits = c(as.Date("2020-01-01"),as.Date("2021-01-10"))) +
-scale_y_continuous(name="Nombre de décès cumulés", , limits=c(0, 700000)) +
-theme(plot.title = element_text(, size=14, face="bold.italic")) 
+scale_y_continuous(name="Nombre de décès cumulés", , limits=c(0, 700000))
 
 fig <- ggplotly(DCcum, tooltip = c("Date", "text")) %>% config(displayModeBar=FALSE) %>% layout(showlegend = FALSE)
 
