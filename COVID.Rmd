@@ -171,6 +171,7 @@ p<- ggplot(dfj, aes(Date, dc, label=dc)) +
 ggtitle("Nombre de décès COVID-19 journaliers en France") +
 geom_col(fill = "#4DB4C1") +
 scale_y_continuous(name="Nombre de décès COVID-19 journaliers", limits=c(0, 1500)) +
+# stat_smooth(method="loess", se=FALSE, color = "#317eac") +
 theme_bw() +
 theme(legend.position='none') +
 geom_text_repel(data = subset(dfj, dc>30), size = 2.5,color = "black", segment.size  = 0.2, segment.color = "grey50", direction="y") +
@@ -247,6 +248,7 @@ p
 p<- ggplot(dij, aes(Date, dc, label=dc)) + 
 ggtitle("Nombre de décès COVID-19 journaliers en Italie") +
 geom_col(fill = "#4DB4C1") +
+stat_smooth(method="loess", se=FALSE, color = "#317eac") +
 scale_y_continuous(name="Nombre de décès COVID-19 journaliers", limits=c(0, 1500)) +
 theme_bw() +
 theme(legend.position='none') +
@@ -260,6 +262,7 @@ p
 p<- ggplot(dukj, aes(Date, dc, label=dc)) + 
 ggtitle("Nombre de décès COVID-19 journaliers en Angleterre") +
 geom_col(fill = "#4DB4C1") +
+# stat_smooth(method="loess", se=FALSE, color = "#317eac") +
 scale_y_continuous(name="Nombre de décès COVID-19 journaliers", limits=c(0, 1500)) +
 theme_bw() +
 theme(legend.position='none') +
@@ -273,6 +276,7 @@ p
 p<- ggplot(dusj, aes(Date, dc, label=dc)) + 
 ggtitle("Nombre de décès COVID-19 journaliers au USA") +
 geom_col(fill = "#4DB4C1") +
+# stat_smooth(method="loess", se=FALSE, color = "#317eac") +
 scale_y_continuous(name="Nombre de décès COVID-19 journaliers", limits=c(0, 3000)) +
 theme_bw() +
 theme(legend.position='none') +
@@ -286,6 +290,7 @@ p
 p<- ggplot(dgj, aes(Date, dc, label=dc)) + 
 ggtitle("Nombre de décès COVID-19 journaliers en Allemagne") +
 geom_col(fill = "#4DB4C1") +
+# stat_smooth(method="loess", se=FALSE, color = "#317eac") +
 scale_y_continuous(name="Nombre de décès COVID-19 journaliers", limits=c(0, 1500)) +
 theme_bw() +
 theme(legend.position='none') +
@@ -299,6 +304,7 @@ p
 p<- ggplot(dnj, aes(Date, dc, label=dc)) + 
 ggtitle("Nombre de décès COVID-19 journaliers aux Pays-Bas") +
 geom_col(fill = "#4DB4C1") +
+# stat_smooth(method="loess", se=FALSE, color = "#317eac") +
 scale_y_continuous(name="Nombre de décès COVID-19 journaliers", limits=c(0, 1500)) +
 theme_bw() +
 theme(legend.position='none') +
