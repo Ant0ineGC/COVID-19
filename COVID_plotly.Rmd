@@ -58,25 +58,55 @@ base <- read.csv("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/mast
 # Suppression de la colonne des Provinces
 base <- base[base$"Province.State" == "",]
 
-# Creation d'une base FR, Italy...et suppression des 43 premières colonnes
-base2 <- base[base$Country.Region == "France" | base$Country.Region == "Italy" | base$Country.Region == "Germany" | base$Country.Region == "Iran" | base$Country.Region == "US" | base$Country.Region == "United Kingdom" | base$Country.Region == "Spain" | base$Country.Region == "Netherlands",]
-base2 <- base2[,c(-1:-43)]
-
-# correspond au nombre de jours
-x <- ncol (base2)
-
-
 #Creation des data frame à 3 colonnes : nombres DC, date, Pays
 
-# Creation de liste pour chaque pays
-baseGermany <- as.numeric (base2[2,])
-baseItaly <- as.numeric (base2[4,])
-baseFrance <- as.numeric (base2[1,])
-baseIran <- as.numeric (base2[3,])
-baseUS <- as.numeric (base2[8,])
-baseUK <- as.numeric (base2[7,])
-basee <- as.numeric (base2[6,])
-basen <- as.numeric (base2[5,])
+# 
+baseGermany <- base %>%
+    filter (Country.Region == "Germany")
+baseGermany <- baseGermany[,c(-1:-43)]
+baseGermany <- as.numeric(baseGermany)
+
+baseItaly <- base %>%
+    filter (Country.Region == "Italy")
+baseItaly <- baseItaly[,c(-1:-43)]
+baseItaly <- as.numeric(baseItaly)
+
+baseFrance <- base %>%
+    filter (Country.Region == "France")
+baseFrance <- baseFrance[,c(-1:-43)]
+x <- ncol (baseFrance)
+baseFrance <- as.numeric(baseFrance)
+
+baseIran <- base %>%
+    filter (Country.Region == "Iran")
+baseIran <- baseIran[,c(-1:-43)]
+baseIran <- as.numeric(baseIran)
+
+baseUS <- base %>%
+    filter (Country.Region == "US")
+baseUS <- baseUS[,c(-1:-43)]
+baseUS <- as.numeric(baseUS)
+
+baseUK <- base %>%
+    filter (Country.Region == "United Kingdom")
+baseUK <- baseUK[,c(-1:-43)]
+baseUK <- as.numeric(baseUK)
+
+basee <- base %>%
+    filter (Country.Region == "Spain")
+basee <- basee[,c(-1:-43)]
+basee <- as.numeric(basee)
+
+basen <- base %>%
+    filter (Country.Region == "Netherlands")
+basen <- basen[,c(-1:-43)]
+basen <- as.numeric(basen)
+
+baseb  <- base %>%
+    filter (Country.Region == "Brazil")
+baseb <- baseb[,c(-1:-43)]
+baseb <- as.numeric(baseb)
+
 
 # creation du Data frame avec la date du 01/03 au jours dernier jour de la abse initiale
 df <- data.frame(baseFrance,(as.Date("2020-03-01") + 0:(x-1)),"France")
@@ -87,6 +117,9 @@ duk <- data.frame(baseUK,(as.Date("2020-03-01") + 0:(x-1)),"UK")
 dir <- data.frame(baseIran,(as.Date("2020-03-01") + 0:(x-1)),"Iran")
 de <- data.frame(basee,(as.Date("2020-03-01") + 0:(x-1)),"Espagne")
 dn<- data.frame(basen,(as.Date("2020-03-01") + 0:(x-1)),"Pays-Bas")
+db <- data.frame(baseb,(as.Date("2020-03-01") + 0:(x-1)),"Bresil")
+
+
 
 colnames(df) <- c("dc","Date","Pays")
 colnames(di) <- c("dc","Date","Pays")
@@ -96,6 +129,7 @@ colnames(duk) <- c("dc","Date","Pays")
 colnames(dir) <- c("dc","Date","Pays")
 colnames(de) <- c("dc","Date","Pays")
 colnames(dn) <- c("dc","Date","Pays")
+colnames(db) <- c("dc","Date","Pays")
 
 # base des décès journaliers par pays (différence entre le nombre de totale pour chaque journée
 dfj <- data.frame(dc = c(0,diff(df$dc)), Date = c(df$Date), Pays = "Journaliers")
@@ -104,8 +138,10 @@ dukj <- data.frame(dc = c(0,diff(duk$dc)), Date = c(duk$Date), Pays = "yJournali
 dusj <- data.frame(dc = c(0,diff(dus$dc)), Date = c(dus$Date), Pays = "yJournaliers")
 dgj <- data.frame(dc = c(0,diff(dg$dc)), Date = c(dg$Date), Pays = "Journaliers")
 dnj <- data.frame(dc = c(0,diff(dn$dc)), Date = c(dn$Date), Pays = "yJournaliers")
+dbj <- data.frame(dc = c(0,diff(db$dc)), Date = c(db$Date), Pays = "Journaliers")
 
-baseIFG <- rbind(di,df,dg, dus, duk,dir,de,dn)
+
+baseIFG <- rbind(di,df,dg, dus, duk,dir,de,dn, db)
 
 # Base Santé publique france
 hospit <- read.csv2("https://www.data.gouv.fr/fr/datasets/r/63352e38-d353-4b54-bfd1-f1b3ee1cabd7")
@@ -153,6 +189,9 @@ incid_reaidf <- data.frame(aggregate(incid_hospitidf$incid_rea, by = list(typ2 =
 colnames(incid_rea) <- c("Date","rea","lieu")
 colnames(incid_reaidf) <- c("Date","rea","lieu")
 
+#Liste des bouton plotly à masquer
+listmodbar <- c("zoom2d", "pan2d", "select2d", "lasso2d", "zoomIn2d", "zoomOut2d", "autoScale2d", "resetScale2d", "hoverClosestCartesian", "hoverCompareCartesian", "zoom3d", "pan3d", "resetCameraDefault3d", "resetCameraLastSave3d", "hoverClosest3d", "orbitRotation", "tableRotation", "zoomInGeo", "zoomOutGeo", "resetGeo", "hoverClosestGeo", "sendDataToCloud", "hoverClosestGl2d", "hoverClosestPie", "toggleHover", "resetViews", "toggleSpikelines", "resetViewMapbox")
+
 ```
 
 
@@ -173,7 +212,7 @@ scale_x_date(date_breaks = "week", date_labels = "%d %B", limits = c(as.Date("20
 scale_y_continuous(name="Nombre de décès COVID cumulés") +
 theme_classic() + theme(plot.title = element_text(size=14, face="bold", color = "#317eac"))
 
-fig <- ggplotly(p, tooltip = c("colour", "Date", "text")) %>% config(displayModeBar=FALSE) %>% layout(showlegend = FALSE)
+fig <- ggplotly(p, tooltip = c("colour", "Date", "text")) %>% config(modeBarButtonsToRemove = listmodbar, displaylogo = FALSE, toImageButtonOptions = list(format = "png", width = 800, height = 600)) %>% layout(showlegend = FALSE)
 fig
 
 
@@ -187,7 +226,7 @@ scale_y_continuous(name="Nombre de décès COVID-19 journaliers", limits=c(0, 15
 theme_classic() + theme(plot.title = element_text(size=14, face="bold", color = "#317eac")) +
 theme(legend.position='none')
 
-fig <- ggplotly(p, tooltip = c("Date", "text")) %>% config(displayModeBar=FALSE)
+fig <- ggplotly(p, tooltip = c("Date", "text")) %>% config(modeBarButtonsToRemove = listmodbar, displaylogo = FALSE, toImageButtonOptions = list(format = "png", width = 800, height = 600))
 fig
 
 # hospit COVID
@@ -202,7 +241,7 @@ scale_y_continuous(name="Nombre de patients hospitalisés") +
 theme_classic() + theme(plot.title = element_text(size=14, face="bold", color = "#317eac")) +
 theme(legend.position='none')
 
-fig <- ggplotly(p, tooltip = c("Date", "text")) %>% config(displayModeBar=FALSE)
+fig <- ggplotly(p, tooltip = c("Date", "text")) %>% config(modeBarButtonsToRemove = listmodbar, displaylogo = FALSE, toImageButtonOptions = list(format = "png", width = 800, height = 600))
 fig
 
 # hospit en cours
@@ -215,7 +254,7 @@ scale_y_continuous(name="Nombre de patients hospitalisés") +
 theme_classic() + theme(plot.title = element_text(size=14, face="bold", color = "#317eac")) +
 theme(legend.position='none')
 
-fig <- ggplotly(p, tooltip = c("Date", "text")) %>% config(displayModeBar=FALSE)
+fig <- ggplotly(p, tooltip = c("Date", "text")) %>% config(modeBarButtonsToRemove = listmodbar, displaylogo = FALSE, toImageButtonOptions = list(format = "png", width = 800, height = 600))
 fig
 
 # Rea COVID
@@ -230,7 +269,7 @@ scale_y_continuous(name="Nombre de patients hospitalisés") +
 theme_classic() + theme(plot.title = element_text(size=14, face="bold", color = "#317eac")) +
 theme(legend.position='none')
 
-fig <- ggplotly(p, tooltip = c("Date", "text")) %>% config(displayModeBar=FALSE)
+fig <- ggplotly(p, tooltip = c("Date", "text")) %>% config(modeBarButtonsToRemove = listmodbar, displaylogo = FALSE, toImageButtonOptions = list(format = "png", width = 800, height = 600))
 fig
 
 # Patient en réa
@@ -243,7 +282,7 @@ scale_y_continuous(name="Nombre de patients hospitalisés") +
 theme_classic() + theme(plot.title = element_text(size=14, face="bold", color = "#317eac")) +
 theme(legend.position='none')
 
-fig <- ggplotly(p, tooltip = c("Date", "text")) %>% config(displayModeBar=FALSE)
+fig <- ggplotly(p, tooltip = c("Date", "text")) %>% config(modeBarButtonsToRemove = listmodbar, displaylogo = FALSE, toImageButtonOptions = list(format = "png", width = 800, height = 600))
 fig
 
 # dc/ jours en Italie
@@ -255,7 +294,7 @@ scale_y_continuous(name="Nombre de décès COVID-19 journaliers", limits=c(0, 15
 theme_classic() + theme(plot.title = element_text(size=14, face="bold", color = "#317eac")) +
 theme(legend.position='none')
 
-fig <- ggplotly(p, tooltip = c("Date", "text")) %>% config(displayModeBar=FALSE)
+fig <- ggplotly(p, tooltip = c("Date", "text")) %>% config(modeBarButtonsToRemove = listmodbar, displaylogo = FALSE, toImageButtonOptions = list(format = "png", width = 800, height = 600))
 fig
 
 # dc/ jours en UK
@@ -267,7 +306,7 @@ scale_y_continuous(name="Nombre de décès COVID-19 journaliers", limits=c(0, 15
 theme_classic() + theme(plot.title = element_text(size=14, face="bold", color = "#317eac")) +
 theme(legend.position='none')
 
-fig <- ggplotly(p, tooltip = c("Date", "text")) %>% config(displayModeBar=FALSE)
+fig <- ggplotly(p, tooltip = c("Date", "text")) %>% config(modeBarButtonsToRemove = listmodbar, displaylogo = FALSE, toImageButtonOptions = list(format = "png", width = 800, height = 600))
 fig
 
 # dc/ jours en US
@@ -279,7 +318,7 @@ scale_y_continuous(name="Nombre de décès COVID-19 journaliers", limits=c(0, 30
 theme_classic() + theme(plot.title = element_text(size=14, face="bold", color = "#317eac")) +
 theme(legend.position='none')
 
-fig <- ggplotly(p, tooltip = c("Date", "text")) %>% config(displayModeBar=FALSE)
+fig <- ggplotly(p, tooltip = c("Date", "text")) %>% config(modeBarButtonsToRemove = listmodbar, displaylogo = FALSE, toImageButtonOptions = list(format = "png", width = 800, height = 600))
 fig
 
 # dc/ jours en Allemagne
@@ -291,7 +330,7 @@ scale_y_continuous(name="Nombre de décès COVID-19 journaliers", limits=c(0, 15
 theme_classic() + theme(plot.title = element_text(size=14, face="bold", color = "#317eac")) +
 theme(legend.position='none')
 
-fig <- ggplotly(p, tooltip = c("Date", "text")) %>% config(displayModeBar=FALSE)
+fig <- ggplotly(p, tooltip = c("Date", "text")) %>% config(modeBarButtonsToRemove = listmodbar, displaylogo = FALSE, toImageButtonOptions = list(format = "png", width = 800, height = 600))
 fig
 
 # dc/ jours aux pays-bas
@@ -303,7 +342,19 @@ scale_y_continuous(name="Nombre de décès COVID-19 journaliers", limits=c(0, 15
 theme_classic() + theme(plot.title = element_text(size=14, face="bold", color = "#317eac")) +
 theme(legend.position='none')
 
-fig <- ggplotly(p, tooltip = c("Date", "text")) %>% config(displayModeBar=FALSE)
+fig <- ggplotly(p, tooltip = c("Date", "text")) %>% config(modeBarButtonsToRemove = listmodbar, displaylogo = FALSE, toImageButtonOptions = list(format = "png", width = 800, height = 600))
+fig
+
+# dc/ jours aux Brésil
+
+p<- ggplot(dbj, aes(Date, dc, label=dc, text = paste0("Nombre de décès : ", dc))) + 
+ggtitle("Nombre de décès COVID-19 journaliers au Brésil") +
+geom_col(fill = "#4DB4C1") +
+scale_y_continuous(name="Nombre de décès COVID-19 journaliers", limits=c(0, 1500)) +
+theme_classic() + theme(plot.title = element_text(size=14, face="bold", color = "#317eac")) +
+theme(legend.position='none')
+
+fig <- ggplotly(p, tooltip = c("Date", "text")) %>% config(modeBarButtonsToRemove = listmodbar, displaylogo = FALSE, toImageButtonOptions = list(format = "png", width = 800, height = 600))
 fig
 
 # Evaluation de la surmortalité
@@ -317,7 +368,7 @@ theme_classic() + theme(plot.title = element_text(size=14, face="bold", color = 
 scale_x_date(date_breaks = "month", date_labels = "%b", limits = c(as.Date("2020-01-01"),as.Date("2021-01-10"))) +
 scale_y_continuous(name="Nombre de décès journaliers")
 
-fig <- ggplotly(DCj, tooltip = c("Date", "text")) %>% config(displayModeBar=FALSE) %>% layout(showlegend = FALSE)
+fig <- ggplotly(DCj, tooltip = c("Annee", "text")) %>% config(modeBarButtonsToRemove = listmodbar, displaylogo = FALSE, toImageButtonOptions = list(format = "png", width = 800, height = 600)) %>% layout(showlegend = FALSE)
 fig
 
 # DC cumulé
@@ -329,7 +380,7 @@ theme_classic() + theme(plot.title = element_text(size=14, face="bold", color = 
 scale_x_date(date_breaks = "month", date_labels = "%b", limits = c(as.Date("2020-01-01"),as.Date("2021-01-10"))) +
 scale_y_continuous(name="Nombre de décès cumulés", , limits=c(0, 700000))
 
-fig <- ggplotly(DCcum, tooltip = c("Date", "text")) %>% config(displayModeBar=FALSE) %>% layout(showlegend = FALSE)
+fig <- ggplotly(DCcum, tooltip = c("Annee", "text")) %>% config(modeBarButtonsToRemove = listmodbar, displaylogo = FALSE, toImageButtonOptions = list(format = "png", width = 800, height = 600, filename = 'Perinat_Data')) %>% layout(showlegend = FALSE)
 
 # fig <- ggplotly(DCcum) %>% config(displayModeBar=FALSE) %>% layout(xaxis=list(fixedrange=TRUE)) %>% layout(yaxis=list(fixedrange=TRUE))
 

@@ -5,7 +5,7 @@ library(lubridate)
 
 setwd("/Users/antoinegaudetchardonnet/Git/COVID-19/COVID-19/Base_DCJours")
 
-DC20 <- as.data.frame(read.csv2("2020-05-07_deces_quotidiens_departement_csv.csv") )
+DC20 <- as.data.frame(read.csv2("2020-05-29_deces_quotidiens_departement_csv.csv") )
 DC20 <- select(filter (DC20, Zone == "France"), Date_evenement,Total_deces_2020)
 DC20$Freq <- c(0,diff(DC20$Total_deces_2020))
 
