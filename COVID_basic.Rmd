@@ -1,0 +1,392 @@
+---
+title: "Représentation graphique <br> de l'épidémie de COVID-2019"
+author: "Antoine Gaudet Chardonnet"
+date:  '`r format(Sys.time(), "%d %B %Y, %H:%M")`'
+output: html_document
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+```{r, include=FALSE}
+
+library(directlabels)
+library(lubridate)
+library(tidyverse)
+library(ggrepel)
+library(plotly)
+
+setwd("/Users/antoinegaudetchardonnet/Git/COVID-19/COVID-19/Data")
+
+baseDCj <- read.csv ("DCjours_annuelV2.csv")
+baseDCj$Date <- as.Date (baseDCj$Date)
+baseDCj$Deces <- as.numeric (baseDCj$Deces)
+baseDCj$Annee <- as.factor (baseDCj$Annee)
+baseDCj <- baseDCj[,-1]
+baseDCj$cumsum <- do.call(c, tapply(baseDCj$Deces, baseDCj$Annee, FUN=cumsum))
+
+csv <- paste("ptime_series_19-covid-Deaths_",Sys.Date(),".csv", sep="" )
+csv2 <- paste("ptime_series_19-covid-Hospit",Sys.Date(),".csv", sep="" )
+
+download.file("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv", 
+    destfile = csv, method = "curl")
+
+download.file("https://www.data.gouv.fr/fr/datasets/r/63352e38-d353-4b54-bfd1-f1b3ee1cabd7", 
+    destfile = csv2, method = "curl")
+
+setwd("/Users/antoinegaudetchardonnet/Git/COVID-19/COVID-19/")
+
+# Base Johns Hopkins CSSE
+base <- read.csv("https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv")
+
+
+# Suppression de la colonne des Provinces
+base <- base[base$"Province.State" == "",]
+
+#Creation des data frame à 3 colonnes : nombres DC, date, Pays
+
+# 
+baseGermany <- base %>%
+    filter (Country.Region == "Germany")
+baseGermany <- baseGermany[,c(-1:-43)]
+baseGermany <- as.numeric(baseGermany)
+
+baseItaly <- base %>%
+    filter (Country.Region == "Italy")
+baseItaly <- baseItaly[,c(-1:-43)]
+baseItaly <- as.numeric(baseItaly)
+
+baseFrance <- base %>%
+    filter (Country.Region == "France")
+baseFrance <- baseFrance[,c(-1:-43)]
+x <- ncol (baseFrance)
+baseFrance <- as.numeric(baseFrance)
+
+baseIran <- base %>%
+    filter (Country.Region == "Iran")
+baseIran <- baseIran[,c(-1:-43)]
+baseIran <- as.numeric(baseIran)
+
+baseUS <- base %>%
+    filter (Country.Region == "US")
+baseUS <- baseUS[,c(-1:-43)]
+baseUS <- as.numeric(baseUS)
+
+baseUK <- base %>%
+    filter (Country.Region == "United Kingdom")
+baseUK <- baseUK[,c(-1:-43)]
+baseUK <- as.numeric(baseUK)
+
+basee <- base %>%
+    filter (Country.Region == "Spain")
+basee <- basee[,c(-1:-43)]
+basee <- as.numeric(basee)
+
+basen <- base %>%
+    filter (Country.Region == "Netherlands")
+basen <- basen[,c(-1:-43)]
+basen <- as.numeric(basen)
+
+baseb  <- base %>%
+    filter (Country.Region == "Brazil")
+baseb <- baseb[,c(-1:-43)]
+baseb <- as.numeric(baseb)
+
+
+# creation du Data frame avec la date du 01/03 au jours dernier jour de la abse initiale
+df <- data.frame(baseFrance,(as.Date("2020-03-01") + 0:(x-1)),"France")
+di <- data.frame(baseItaly,(as.Date("2020-03-01") + 0:(x-1)),"Italie")
+dg <- data.frame(baseGermany,(as.Date("2020-03-01") + 0:(x-1)),"Allemagne")
+dus <- data.frame(baseUS,(as.Date("2020-03-01") + 0:(x-1)),"US")
+duk <- data.frame(baseUK,(as.Date("2020-03-01") + 0:(x-1)),"UK")
+dir <- data.frame(baseIran,(as.Date("2020-03-01") + 0:(x-1)),"Iran")
+de <- data.frame(basee,(as.Date("2020-03-01") + 0:(x-1)),"Espagne")
+dn<- data.frame(basen,(as.Date("2020-03-01") + 0:(x-1)),"Pays-Bas")
+db <- data.frame(baseb,(as.Date("2020-03-01") + 0:(x-1)),"Bresil")
+
+
+
+colnames(df) <- c("dc","Date","Pays")
+colnames(di) <- c("dc","Date","Pays")
+colnames(dg) <- c("dc","Date","Pays")
+colnames(dus) <- c("dc","Date","Pays")
+colnames(duk) <- c("dc","Date","Pays")
+colnames(dir) <- c("dc","Date","Pays")
+colnames(de) <- c("dc","Date","Pays")
+colnames(dn) <- c("dc","Date","Pays")
+colnames(db) <- c("dc","Date","Pays")
+
+# base des décès journaliers par pays (différence entre le nombre de totale pour chaque journée
+dfj <- data.frame(dc = c(0,diff(df$dc)), Date = c(df$Date), Pays = "Journaliers")
+dij <- data.frame(dc = c(0,diff(di$dc)), Date = c(di$Date), Pays = "Journaliers")
+dukj <- data.frame(dc = c(0,diff(duk$dc)), Date = c(duk$Date), Pays = "yJournaliers")
+dusj <- data.frame(dc = c(0,diff(dus$dc)), Date = c(dus$Date), Pays = "yJournaliers")
+dgj <- data.frame(dc = c(0,diff(dg$dc)), Date = c(dg$Date), Pays = "Journaliers")
+dnj <- data.frame(dc = c(0,diff(dn$dc)), Date = c(dn$Date), Pays = "yJournaliers")
+dbj <- data.frame(dc = c(0,diff(db$dc)), Date = c(db$Date), Pays = "Journaliers")
+
+
+baseIFG <- rbind(di,df,dg, dus, duk,dir,de,dn, db)
+
+# Base Santé publique france
+hospit <- read.csv2("https://www.data.gouv.fr/fr/datasets/r/63352e38-d353-4b54-bfd1-f1b3ee1cabd7")
+
+# Suppression de la colonne sexe et mise en forme de la base
+hospit <- hospit[hospit$sexe == "0",]
+transform(hospit, dep = as.numeric(dep))
+transform(hospit, jour = as.Date(jour))
+hospit$jour <- as.Date(hospit$jour)
+hospitidf <- hospit[hospit$dep == 75 | hospit$dep == 91 |hospit$dep == 92 |hospit$dep == 93 |hospit$dep == 94 |hospit$dep == 95 |hospit$dep == 77 ,]
+
+# hosp = hospitalisation en France
+hosp <- data.frame(aggregate(hospit$hosp, by = list(typ2 = hospit$jour), sum),"France")
+hospidf <- data.frame(aggregate(hospitidf$hosp, by = list(typ2 = hospitidf$jour), sum), "IdF")
+colnames(hosp) <- c("Date","hosp","lieu")
+colnames(hospidf) <- c("Date","hosp","lieu")
+
+# data hospitalisation en réa
+rea <- data.frame(aggregate(hospit$rea, by = list(typ2 = hospit$jour), sum),"France")
+reaidf <- data.frame(aggregate(hospitidf$rea, by = list(typ2 = hospitidf$jour), sum), "IdF")
+
+colnames(rea) <- c("Date","rea","lieu")
+colnames(reaidf) <- c("Date","rea","lieu")
+
+
+# Base Santé publique hospit quotidienne france
+incid_hospit <- read.csv2("https://www.data.gouv.fr/en/datasets/r/6fadff46-9efd-4c53-942a-54aca783c30c")
+
+# Mise en forme de la base
+incid_hospit$dep[incid_hospit$dep %in% c("2A", "2B")] <- "20"
+transform(incid_hospit, dep = as.numeric(dep))
+transform(incid_hospit, jour = as.Date(jour))
+incid_hospit$jour <- as.Date(incid_hospit$jour)
+incid_hospitidf <- incid_hospit[incid_hospit$dep == 75 | incid_hospit$dep == 91 |incid_hospit$dep == 92 |incid_hospit$dep == 93 |incid_hospit$dep == 94 |incid_hospit$dep == 95 |incid_hospit$dep == 77 ,]
+
+# hosp = hospitalisation quotdienne en France
+incid_hosp <- data.frame(aggregate(incid_hospit$incid_hosp, by = list(typ2 = incid_hospit$jour), sum),"France")
+incid_hospidf <- data.frame(aggregate(incid_hospitidf$incid_hosp, by = list(typ2 = incid_hospitidf$jour), sum), "IdF")
+colnames(incid_hosp) <- c("Date","hosp","lieu")
+colnames(incid_hospidf) <- c("Date","hosp","lieu")
+
+# data hospitalisation quotdienne en réa
+incid_rea <- data.frame(aggregate(incid_hospit$incid_rea, by = list(typ2 = incid_hospit$jour), sum),"France")
+incid_reaidf <- data.frame(aggregate(incid_hospitidf$incid_rea, by = list(typ2 = incid_hospitidf$jour), sum), "IdF")
+colnames(incid_rea) <- c("Date","rea","lieu")
+colnames(incid_reaidf) <- c("Date","rea","lieu")
+
+```
+
+
+
+```{r eruptions, echo=FALSE, warning=FALSE, message=FALSE}
+
+# warning et message false pour ne pas affiché les alertes
+
+# Courbe des décès cumulés
+# scale_x_date : limits du 01/03 au j+2 permet l'affichage de directlab
+# scale_y_continuous : affiche la dernière valeur de chaque courbe
+# direct.label ; affiche la légende à la fin de chaque courbe
+# régression : stat_smooth(method="loess", se=FALSE, color = "#317eac") 
+
+
+FIG <- ggplot (baseIFG, aes(x=Date, y=dc, fill=Pays, colour=Pays)) +
+ggtitle("Nombre de décès COVID-19 cumulés depuis le 1er mars 2020") +
+geom_line() +
+theme_bw() +
+scale_x_date(date_breaks = "week", date_labels = "%d %B", limits = c(as.Date("2020-03-01"),as.Date((Sys.Date()+5)))) +
+scale_y_continuous(name="Nombre de décès COVID cumulés", breaks=c(dir[(x),1],duk[(x),1], dg[(x),1], dus[(x),1], di[(x),1], df[(x),1], de[(x),1])) +
+theme(plot.title = element_text(, size=14, face="bold.italic")) 
+
+direct.label(FIG, method="last.bumpup") 
+
+# dc/ jours en France
+# initialement geom-col décès par jour et total de mort puis nombre total non affiché par soucis d'echelle
+
+p<- ggplot(dfj, aes(Date, dc, label=dc)) + 
+ggtitle("Nombre de décès COVID-19 journaliers en France") +
+geom_col(fill = "#4DB4C1") +
+scale_y_continuous(name="Nombre de décès COVID-19 journaliers", limits=c(0, 1500)) +
+stat_smooth(method="loess", se=FALSE, color = "#317eac") +
+theme_bw() +
+theme(legend.position='none') +
+#geom_text_repel(data = subset(dfj, dc>30), size = 2.5,color = "black", segment.size  = 0.2, segment.color = "grey50", direction="y") +
+theme(plot.title = element_text(, size=14, face="bold.italic"))
+
+p
+
+# hospit COVID
+
+# hospit quotidiennes
+
+p<- ggplot(NULL, aes(Date, hosp)) + 
+geom_col(data = incid_hosp, alpha = 0.3, fill = "#FDAC88") +
+geom_col(data = incid_hospidf, alpha = 1, fill = "#4DB4C1") +
+ggtitle("Hospitalisations quotidiennes pour COVID-19 en Ile de France et\n en France") +
+scale_y_continuous(name="Nombre de patients hospitalisés") +
+theme_bw() +
+theme(legend.position='none') +
+#geom_text_repel(data=incid_hosp, label = incid_hosp$hosp, color = "black", size = 2.5, segment.size  = 0.2, segment.color = "grey50") +
+#geom_text_repel(data=incid_hospidf, label = incid_hospidf$hosp, color = "black", size = 2.5,segment.size  = 0.2, segment.color = "grey50") +
+theme(plot.title = element_text(, size=14, face="bold.italic")) 
+
+p
+
+
+# hospit en cours
+
+p<- ggplot(NULL, aes(x = Date, y = hosp, label = hosp)) + 
+geom_col(data = hosp, alpha = 0.3, fill = "#FDAC88") +
+geom_col(data = hospidf, alpha = 1, fill = "#4DB4C1") +
+ggtitle("Patients hospitalisés pour COVID-19 en Ile de France et\n en France") +
+scale_y_continuous(name="Nombre de patients hospitalisés") +
+theme_bw() +
+theme(legend.position='none') +
+#geom_text_repel(data=hosp, label = hosp$hosp, color = "black", size = 2.5, segment.size  = 0.2, segment.color = "grey50") +
+#geom_text_repel(data=hospidf, label = hospidf$hosp, color = "black", size = 2.5,segment.size  = 0.2, segment.color = "grey50") +
+theme(plot.title = element_text(, size=14, face="bold.italic")) 
+
+p
+
+# Rea COVID
+
+# hospit quotidnne en réa
+
+p<- ggplot(NULL, aes(Date, rea)) + 
+geom_col(data = incid_rea, alpha = 0.3, fill = "#FDAC88") +
+geom_col(data = incid_reaidf, alpha = 1, fill = "#4DB4C1") +
+ggtitle("Hospitalisations quotidiennes en réanimation pour COVID-19\n en Ile de France et en France") +
+scale_y_continuous(name="Nombre de patients hospitalisés") +
+theme_bw() +
+theme(legend.position='none') +
+#geom_text_repel(data=incid_rea, label = incid_rea$rea, color = "black", size = 2.5, segment.size  = 0.2, segment.color = "grey50") +
+#geom_text_repel(data=incid_reaidf, label = incid_reaidf$rea, color = "black", size = 2.5,segment.size  = 0.2, segment.color = "grey50") +
+theme(plot.title = element_text(, size=14, face="bold.italic"))  
+
+p
+
+# Patient en réa
+
+p<- ggplot(NULL, aes(Date, rea)) + 
+geom_col(data = rea, alpha = 0.3, fill = "#FDAC88") +
+geom_col(data = reaidf, alpha = 1, fill = "#4DB4C1") +
+ggtitle("Patients hospitalisés en réanimation pour COVID-19\n en Ile de France et en France") +
+scale_y_continuous(name="Nombre de patients hospitalisés") +
+theme_bw() +
+theme(legend.position='none') +
+#geom_text_repel(data=rea, label = rea$rea, color = "black", size = 2.5, segment.size  = 0.2, segment.color = "grey50") +
+#geom_text_repel(data=reaidf, label = reaidf$rea, color = "black", size = 2.5,segment.size  = 0.2, segment.color = "grey50") +
+theme(plot.title = element_text(, size=14, face="bold.italic"))
+
+p
+
+# dc/ jours en Italie
+
+p<- ggplot(dij, aes(Date, dc, label=dc)) + 
+ggtitle("Nombre de décès COVID-19 journaliers en Italie") +
+geom_col(fill = "#4DB4C1") +
+scale_y_continuous(name="Nombre de décès COVID-19 journaliers", limits=c(0, 1500)) +
+theme_bw() +
+theme(legend.position='none') +
+#geom_text_repel(data = subset(dij, dc>30), size = 2.5,color = "black", segment.size  = 0.2, segment.color = "grey50", direction="y") + 
+theme(plot.title = element_text(, size=14, face="bold.italic"))
+
+p
+
+# dc/ jours en UK
+
+p<- ggplot(dukj, aes(Date, dc, label=dc)) + 
+ggtitle("Nombre de décès COVID-19 journaliers en Angleterre") +
+geom_col(fill = "#4DB4C1") +
+scale_y_continuous(name="Nombre de décès COVID-19 journaliers", limits=c(0, 1500)) +
+theme_bw() +
+theme(legend.position='none') +
+#geom_text_repel(data = subset(dukj, dc>30), size = 2.5,color = "black", segment.size  = 0.2, segment.color = "grey50", direction="y") +
+theme(plot.title = element_text(, size=14, face="bold.italic"))
+
+p
+
+# dc/ jours en US
+
+p<- ggplot(dusj, aes(Date, dc, label=dc)) + 
+ggtitle("Nombre de décès COVID-19 journaliers au USA") +
+geom_col(fill = "#4DB4C1") +
+scale_y_continuous(name="Nombre de décès COVID-19 journaliers", limits=c(0, 3000)) +
+theme_bw() +
+theme(legend.position='none') +
+#geom_text_repel(data = subset(dusj, dc>30), size = 2.5,color = "black", segment.size  = 0.2, segment.color = "grey50", direction="y") +
+theme(plot.title = element_text(, size=14, face="bold.italic"))
+
+p
+
+# dc/ jours en Allemagne
+
+p<- ggplot(dgj, aes(Date, dc, label=dc)) + 
+ggtitle("Nombre de décès COVID-19 journaliers en Allemagne") +
+geom_col(fill = "#4DB4C1") +
+scale_y_continuous(name="Nombre de décès COVID-19 journaliers", limits=c(0, 1500)) +
+theme_bw() +
+theme(legend.position='none') +
+#geom_text_repel(data = subset(dgj, dc>30), size = 2.5,color = "black", segment.size  = 0.2, segment.color = "grey50", direction="y") +
+theme(plot.title = element_text(, size=14, face="bold.italic"))
+
+p
+
+# dc/ jours aux pays-bas
+
+p<- ggplot(dnj, aes(Date, dc, label=dc)) + 
+ggtitle("Nombre de décès COVID-19 journaliers aux Pays-Bas") +
+geom_col(fill = "#4DB4C1") +
+scale_y_continuous(name="Nombre de décès COVID-19 journaliers", limits=c(0, 1500)) +
+theme_bw() +
+theme(legend.position='none') +
+#geom_text_repel(data = subset(dnj, dc>30), size = 2.5,color = "black", segment.size  = 0.2, segment.color = "grey50", direction="y") +
+theme(plot.title = element_text(, size=14, face="bold.italic"))
+
+p
+
+# dc/ jours au Brésil
+
+p<- ggplot(dbj, aes(Date, dc, label=dc)) + 
+ggtitle("Nombre de décès COVID-19 journaliers au Brésil") +
+geom_col(fill = "#4DB4C1") +
+scale_y_continuous(name="Nombre de décès COVID-19 journaliers", limits=c(0, 1500)) +
+theme_bw() +
+theme(legend.position='none') +
+#geom_text_repel(data = subset(dnj, dc>30), size = 2.5,color = "black", segment.size  = 0.2, segment.color = "grey50", direction="y") +
+theme(plot.title = element_text(, size=14, face="bold.italic"))
+
+p
+
+# Evaluation de la surmortalité
+
+# DC par jours
+
+DCj <- ggplot (baseDCj, aes(x=Date, y=Deces, color=Annee)) +
+ggtitle("Mortalité journalière toutes causes confondues en France") +
+geom_line ()  +
+theme_bw() +
+scale_x_date(date_breaks = "month", date_labels = "%b", limits = c(as.Date("2020-01-01"),as.Date("2021-01-10"))) +
+scale_y_continuous(name="Nombre de décès journaliers") +
+theme(plot.title = element_text(, size=14, face="bold.italic")) 
+
+direct.label(DCj, method="last.points") 
+
+# DC cumulé
+
+DCcum <- ggplot (baseDCj, aes(x=Date, y=cumsum, color=Annee)) +
+ggtitle("Mortalité cumulée toutes causes confondues en France") +
+geom_line ()  +
+theme_bw() +
+scale_x_date(date_breaks = "month", date_labels = "%b", limits = c(as.Date("2020-01-01"),as.Date("2021-01-10"))) +
+scale_y_continuous(name="Nombre de décès cumulés", , limits=c(0, 700000)) +
+theme(plot.title = element_text(, size=14, face="bold.italic")) 
+
+direct.label(DCcum, method="last.bumpup") 
+
+```
+
+Sources : 2019 Novel Coronavirus COVID-19 (2019-nCoV) Data Repository by Johns Hopkins CSSE & Données hospitalières relatives à l'épidémie de COVID-19 par Santé publique France & Fichier des personnes décédées, Institut National de la Statistique et des Etudes Economiques (Insee)
+

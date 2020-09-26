@@ -13,7 +13,9 @@ runtime: shiny
   max-width: 1800px;
   margin-left: auto;
   margin-right: auto;
+  
 }
+
 </style>
 
 ```{r setup, include=FALSE}
@@ -29,6 +31,9 @@ library(tidyverse)
 library(ggpmisc)
 library(ggrepel)
 library(plotly)
+library(plyr)
+library(flexdashboard)
+
 
 
 setwd("/Users/antoinegaudetchardonnet/Git/COVID-19/COVID-19/Data")
@@ -109,36 +114,36 @@ baseb <- as.numeric(baseb)
 
 
 # creation du Data frame avec la date du 01/03 au jours dernier jour de la abse initiale
-df <- data.frame(baseFrance,(as.Date("2020-03-01") + 0:(x-1)),"France")
-di <- data.frame(baseItaly,(as.Date("2020-03-01") + 0:(x-1)),"Italie")
-dg <- data.frame(baseGermany,(as.Date("2020-03-01") + 0:(x-1)),"Allemagne")
-dus <- data.frame(baseUS,(as.Date("2020-03-01") + 0:(x-1)),"US")
-duk <- data.frame(baseUK,(as.Date("2020-03-01") + 0:(x-1)),"UK")
-dir <- data.frame(baseIran,(as.Date("2020-03-01") + 0:(x-1)),"Iran")
-de <- data.frame(basee,(as.Date("2020-03-01") + 0:(x-1)),"Espagne")
-dn<- data.frame(basen,(as.Date("2020-03-01") + 0:(x-1)),"Pays-Bas")
-db <- data.frame(baseb,(as.Date("2020-03-01") + 0:(x-1)),"Bresil")
+df <- data.frame(baseFrance,(as.Date("2020-03-01") + 0:(x-1)),"France", c(1:x))
+di <- data.frame(baseItaly,(as.Date("2020-03-01") + 0:(x-1)),"Italie", c(1:x))
+dg <- data.frame(baseGermany,(as.Date("2020-03-01") + 0:(x-1)),"Allemagne", c(1:x))
+dus <- data.frame(baseUS,(as.Date("2020-03-01") + 0:(x-1)),"US", c(1:x))
+duk <- data.frame(baseUK,(as.Date("2020-03-01") + 0:(x-1)),"UK", c(1:x))
+dir <- data.frame(baseIran,(as.Date("2020-03-01") + 0:(x-1)),"Iran", c(1:x))
+de <- data.frame(basee,(as.Date("2020-03-01") + 0:(x-1)),"Espagne", c(1:x))
+dn<- data.frame(basen,(as.Date("2020-03-01") + 0:(x-1)),"Pays-Bas", c(1:x))
+db <- data.frame(baseb,(as.Date("2020-03-01") + 0:(x-1)),"Bresil", c(1:x))
 
 
 
-colnames(df) <- c("dc","Date","Pays")
-colnames(di) <- c("dc","Date","Pays")
-colnames(dg) <- c("dc","Date","Pays")
-colnames(dus) <- c("dc","Date","Pays")
-colnames(duk) <- c("dc","Date","Pays")
-colnames(dir) <- c("dc","Date","Pays")
-colnames(de) <- c("dc","Date","Pays")
-colnames(dn) <- c("dc","Date","Pays")
-colnames(db) <- c("dc","Date","Pays")
+colnames(df) <- c("dc","Date","Pays","jour")
+colnames(di) <- c("dc","Date","Pays","jour")
+colnames(dg) <- c("dc","Date","Pays","jour")
+colnames(dus) <- c("dc","Date","Pays","jour")
+colnames(duk) <- c("dc","Date","Pays","jour")
+colnames(dir) <- c("dc","Date","Pays","jour")
+colnames(de) <- c("dc","Date","Pays","jour")
+colnames(dn) <- c("dc","Date","Pays","jour")
+colnames(db) <- c("dc","Date","Pays","jour")
 
 # base des décès journaliers par pays (différence entre le nombre de totale pour chaque journée
-dfj <- data.frame(dc = c(0,diff(df$dc)), Date = c(df$Date), Pays = "Journaliers")
-dij <- data.frame(dc = c(0,diff(di$dc)), Date = c(di$Date), Pays = "Journaliers")
-dukj <- data.frame(dc = c(0,diff(duk$dc)), Date = c(duk$Date), Pays = "yJournaliers")
-dusj <- data.frame(dc = c(0,diff(dus$dc)), Date = c(dus$Date), Pays = "yJournaliers")
-dgj <- data.frame(dc = c(0,diff(dg$dc)), Date = c(dg$Date), Pays = "Journaliers")
-dnj <- data.frame(dc = c(0,diff(dn$dc)), Date = c(dn$Date), Pays = "yJournaliers")
-dbj <- data.frame(dc = c(0,diff(db$dc)), Date = c(db$Date), Pays = "Journaliers")
+dfj <- data.frame(dc = c(0,diff(df$dc)), Date = c(df$Date), Pays = "Journaliers", jour = c(1:x))
+dij <- data.frame(dc = c(0,diff(di$dc)), Date = c(di$Date), Pays = "Journaliers", jour = c(1:x))
+dukj <- data.frame(dc = c(0,diff(duk$dc)), Date = c(duk$Date), Pays = "yJournaliers", jour = c(1:x))
+dusj <- data.frame(dc = c(0,diff(dus$dc)), Date = c(dus$Date), Pays = "yJournaliers", jour = c(1:x))
+dgj <- data.frame(dc = c(0,diff(dg$dc)), Date = c(dg$Date), Pays = "Journaliers", jour = c(1:x))
+dnj <- data.frame(dc = c(0,diff(dn$dc)), Date = c(dn$Date), Pays = "yJournaliers", jour = c(1:x))
+dbj <- data.frame(dc = c(0,diff(db$dc)), Date = c(db$Date), Pays = "Journaliers", jour = c(1:x))
 
 
 baseIFG <- rbind(di,df,dg, dus, duk,dir,de,dn, db)
@@ -219,7 +224,7 @@ fig
 # dc/ jours en France
 # initialement geom-col décès par jour et total de mort puis nombre total non affiché par soucis d'echelle
 
-p<- ggplot(dfj, aes(Date, dc, label=dc, text = paste0("Nombre de décès : ", dc))) + 
+p<- ggplot(dfj, aes(Date, dc, label=dc, text = paste0("Nombre de décès : ", dc)), frame = Date) + 
 ggtitle("Nombre de décès COVID-19 journaliers en France") +
 geom_col(fill = "#4DB4C1") +
 scale_y_continuous(name="Nombre de décès COVID-19 journaliers", limits=c(0, 1500)) +
@@ -306,7 +311,7 @@ scale_y_continuous(name="Nombre de décès COVID-19 journaliers", limits=c(0, 15
 theme_classic() + theme(plot.title = element_text(size=14, face="bold", color = "#317eac")) +
 theme(legend.position='none')
 
-fig <- ggplotly(p, tooltip = c("Date", "text")) %>% config(modeBarButtonsToRemove = listmodbar, displaylogo = FALSE, toImageButtonOptions = list(format = "png", width = 800, height = 600))
+fig <- ggplotly(p, tooltip = c("Date", "text")) %>% config(modeBarButtonsToRemove = listmodbar, displaylogo = FALSE, toImageButtonOptions = list(format = "png", width = 800, height = 600)) 
 fig
 
 # dc/ jours en US
@@ -361,14 +366,14 @@ fig
 
 # DC par jours
 
-DCj <- ggplot (baseDCj, aes(x=Date, y=Deces, color=Annee, text = Deces)) + 
+DCj <- ggplot (baseDCj, aes(x=Date, y=Deces, color=Annee, label = Deces)) + 
 ggtitle("Mortalité journalière toutes causes confondues en France") +
 geom_line ()  +
 theme_classic() + theme(plot.title = element_text(size=14, face="bold", color = "#317eac")) +
 scale_x_date(date_breaks = "month", date_labels = "%b", limits = c(as.Date("2020-01-01"),as.Date("2021-01-10"))) +
 scale_y_continuous(name="Nombre de décès journaliers")
 
-fig <- ggplotly(DCj, tooltip = c("Annee", "text")) %>% config(modeBarButtonsToRemove = listmodbar, displaylogo = FALSE, toImageButtonOptions = list(format = "png", width = 800, height = 600)) %>% layout(showlegend = FALSE)
+fig <- ggplotly(DCj, tooltip = c("Annee", "label")) %>% config(modeBarButtonsToRemove = listmodbar, displaylogo = FALSE, toImageButtonOptions = list(format = "png", width = 800, height = 600)) %>% layout(showlegend = FALSE)
 fig
 
 # DC cumulé
