@@ -1,0 +1,19 @@
+CACHE MANIFEST
+
+# version 1.0.2 20-11-20-1127
+# <html manifest="manifest.appcache">
+
+{
+    "name": "Livret des internes",
+    "description": "Livret des internes du service de chirurgie gynecologique de l'hopital Cochin/Port Royal",
+    "icons": [{
+        "src": "images/apple-touch-icon.png",
+        "sizes": "1024x1024",
+    }],
+    "display": "fullscreen",
+}
+
+LIVRET.html
+CACHE:
+LIVRET.html
+manuel%20Orbis.pdf
