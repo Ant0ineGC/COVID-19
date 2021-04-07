@@ -319,7 +319,7 @@ fig
 p<- ggplot(dusj, aes(Date, dc, label=dc, text = paste0("Nombre de décès : ", dc))) +
 ggtitle("Nombre de décès COVID-19 journaliers au USA") +
 geom_col(fill = "#4DB4C1") +
-scale_y_continuous(name="Nombre de décès COVID-19 journaliers", limits=c(0, 3000)) +
+scale_y_continuous(name="Nombre de décès COVID-19 journaliers", limits=c(0, 5000)) +
 theme_classic() + theme(plot.title = element_text(size=14, face="bold", color = "#317eac")) +
 theme(legend.position='none')
 
@@ -355,7 +355,7 @@ fig
 p<- ggplot(dbj, aes(Date, dc, label=dc, text = paste0("Nombre de décès : ", dc))) + 
 ggtitle("Nombre de décès COVID-19 journaliers au Brésil") +
 geom_col(fill = "#4DB4C1") +
-scale_y_continuous(name="Nombre de décès COVID-19 journaliers", limits=c(0, 1500)) +
+scale_y_continuous(name="Nombre de décès COVID-19 journaliers", limits=c(0, 3500)) +
 theme_classic() + theme(plot.title = element_text(size=14, face="bold", color = "#317eac")) +
 theme(legend.position='none')
 

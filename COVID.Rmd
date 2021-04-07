@@ -409,7 +409,7 @@ Row
 p<- ggplot(dusj, aes(Date, dc, label=dc, text = paste0("Nombre de décès : ", dc))) +
 #ggtitle("Nombre de décès COVID-19 journaliers au USA") +
 geom_col(fill = "#4DB4C1") +
-scale_y_continuous(name="Nombre de décès COVID-19 journaliers", limits=c(0, 3000)) +
+scale_y_continuous(name="Nombre de décès COVID-19 journaliers", limits=c(0, 4000)) +
 theme_classic() + theme(plot.title = element_text( size=10, face="bold", color = "#317eac")) + theme (axis.text.y = element_text(size=8)) + theme (axis.title.y = element_text(size=8)) +theme (axis.text.x = element_text(size=8)) + theme (axis.title.x = element_text(size=8)) +
 theme(legend.position='none')
 
@@ -474,7 +474,7 @@ Row
 p<- ggplot(dbj, aes(Date, dc, label=dc, text = paste0("Nombre de décès : ", dc))) + 
 #ggtitle("Nombre de décès COVID-19 journaliers au Brésil") +
 geom_col(fill = "#4DB4C1") +
-scale_y_continuous(name="Nombre de décès COVID-19 journaliers", limits=c(0, 1500)) +
+scale_y_continuous(name="Nombre de décès COVID-19 journaliers", limits=c(0, 3500)) +
 theme_classic() + theme(plot.title = element_text( size=10, face="bold", color = "#317eac")) + theme (axis.text.y = element_text(size=8)) + theme (axis.title.y = element_text(size=8)) +theme (axis.text.x = element_text(size=8)) + theme (axis.title.x = element_text(size=8)) +
 theme(legend.position='none')
 
